@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "NodeNext",
+        "module": "ESNext",
+        "target": "ESNext",
+        "sourceMap": true,
+        "outDir": "./dist",
+        "esModuleInterop": true,
+        "baseUrl": ".",
+        "paths": {
+            "apiframework/*": [
+                "node_modules/apiframework/dist/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}
