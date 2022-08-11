@@ -30,7 +30,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError('Bin not found.', 404);
         }
 
-        if (bin.username !== req.jwt.sub) {
+        if (bin.username !== req.jwt!.sub) {
             throw new HTTPError('You are not the owner of this bin.', 403);
         }
 
@@ -38,9 +38,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid body.", 400);
         }
 
-        bin.content = req.parsedBody;
-
-        await Bin.save(bin);
+        await Bin.save(bin.id, { content: req.parsedBody });
 
         return Response.json(bin);
     }
@@ -57,7 +55,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError('Bin not found.', 404);
         }
 
-        if (bin.username !== req.jwt.sub) {
+        if (bin.username !== req.jwt!.sub) {
             throw new HTTPError('You are not the owner of this bin.', 403);
         }
 
@@ -65,9 +63,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid body.", 400);
         }
 
-        bin.content = req.parsedBody;
-
-        await Bin.save(bin);
+        await Bin.save(bin.id, { content: req.parsedBody });
 
         return Response.json(bin);
     }
@@ -84,11 +80,12 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError('Bin not found.', 404);
         }
 
-        if (bin.username !== req.jwt.sub) {
+
+        if (bin.username !== req.jwt!.sub) {
             throw new HTTPError('You are not the owner of this bin.', 403);
         }
 
-        await Bin.delete(bin);
+        await Bin.delete(bin.id);
 
         return Response.empty();
     }

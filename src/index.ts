@@ -6,11 +6,11 @@ dotenv.config({ override: true });
 import router from './app/routes/index.js';
 import { Server } from "apiframework/http";
 import { prisma } from './app/lib/Prisma.js';
-import { ConsoleLogger } from 'apiframework/log';
+import { ConsoleLogger, LogLevel } from 'apiframework/log';
 
 const server = new Server({
     router,
-    logger: new ConsoleLogger(),
+    logger: new ConsoleLogger(LogLevel.DEBUG),
 });
 
 const port = parseInt(process.env.PORT || '3000');

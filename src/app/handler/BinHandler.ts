@@ -20,7 +20,7 @@ export default class BinHandler extends Handler {
 
         const data = {
             id,
-            username: req.jwt.sub,
+            username: req.jwt!.sub,
             content: req.parsedBody
         };
 

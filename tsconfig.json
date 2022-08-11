@@ -5,6 +5,9 @@
         "target": "ESNext",
         "sourceMap": true,
         "outDir": "./dist",
+        "strict": true,
+        "pretty": true,
+        "experimentalDecorators": true,
         "esModuleInterop": true,
         "baseUrl": ".",
         "paths": {
