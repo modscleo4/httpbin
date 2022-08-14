@@ -3,6 +3,7 @@ import { HTTPError } from "apiframework/errors";
 import { generateUUID } from "apiframework/util/uuid.js";
 
 import Bin from "../model/Bin.js";
+import { Payload } from "apiframework/util/jwt.js";
 
 export default class BinHandler extends Handler {
     async get(req: Request): Promise<Response> {
@@ -18,9 +19,11 @@ export default class BinHandler extends Handler {
 
         const id = generateUUID();
 
+        const jwt: Payload = req.container.get('jwt');
+
         const data = {
             id,
-            username: req.jwt!.sub,
+            username: jwt!.sub ?? '',
             content: req.parsedBody
         };
 

@@ -2,6 +2,7 @@ import { Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
 
 import Bin from "../model/Bin.js";
+import { Payload } from "apiframework/util/jwt.js";
 
 export default class BinByIdHandler extends Handler {
     async get(req: Request): Promise<Response> {
@@ -30,7 +31,9 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError('Bin not found.', 404);
         }
 
-        if (bin.username !== req.jwt!.sub) {
+        const jwt: Payload = req.container.get('jwt');
+
+        if (bin.username !== jwt!.sub) {
             throw new HTTPError('You are not the owner of this bin.', 403);
         }
 
@@ -38,7 +41,9 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid body.", 400);
         }
 
-        await Bin.save(bin.id, { content: req.parsedBody });
+        bin.content = req.parsedBody;
+
+        await Bin.save(bin.id, bin);
 
         return Response.json(bin);
     }
@@ -55,7 +60,9 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError('Bin not found.', 404);
         }
 
-        if (bin.username !== req.jwt!.sub) {
+        const jwt: Payload = req.container.get('jwt');
+
+        if (bin.username !== jwt!.sub) {
             throw new HTTPError('You are not the owner of this bin.', 403);
         }
 
@@ -63,7 +70,9 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid body.", 400);
         }
 
-        await Bin.save(bin.id, { content: req.parsedBody });
+        bin.content = req.parsedBody;
+
+        await Bin.save(bin.id, bin);
 
         return Response.json(bin);
     }
@@ -80,8 +89,9 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError('Bin not found.', 404);
         }
 
+        const jwt: Payload = req.container.get('jwt');
 
-        if (bin.username !== req.jwt!.sub) {
+        if (bin.username !== jwt!.sub) {
             throw new HTTPError('You are not the owner of this bin.', 403);
         }
 

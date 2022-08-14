@@ -20,12 +20,13 @@ export default class Bin {
         });
     }
 
-    static async save(id: string, { content }: { content: any }) {
+    static async save(id: string, { username, content }: { username: string, content: any }) {
         return await prisma.bins.update({
             where: {
                 id
             },
             data: {
+                username,
                 content
             }
         });

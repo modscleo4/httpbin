@@ -4,8 +4,7 @@ import Oauth2Handler from '../handler/Oauth2Handler.js';
 import BinHandler from '../handler/BinHandler.js';
 import BinByIdHandler from '../handler/BinByIdHandler.js';
 
-import AuthBearerMiddleware from '../middleware/AuthBearerMiddleware.js';
-import { HTTPErrorMiddleware, ParseBodyMiddleware } from 'apiframework/middlewares';
+import { AuthBearerMiddleware, HTTPErrorMiddleware, OauthScopeMiddleware, ParseBodyMiddleware } from 'apiframework/middlewares';
 
 const Router = new RouterWrapper();
 
@@ -24,13 +23,13 @@ Router.post('/oauth/token', Oauth2Handler).withName('oauth.token');
 
 Router.group('/bin', () => {
     Router.get('/', BinHandler).withName('bin.list');
-    Router.post('/', BinHandler, [AuthBearerMiddleware]).withName('bin.create');
+    Router.post('/', BinHandler, [AuthBearerMiddleware, OauthScopeMiddleware(['bin'])]).withName('bin.create');
 
     Router.group('/{id}', () => {
         Router.get('/', BinByIdHandler).withName('bin.get');
-        Router.put('/', BinByIdHandler, [AuthBearerMiddleware]).withName('bin.update');
-        Router.patch('/', BinByIdHandler, [AuthBearerMiddleware]).withName('bin.patch');
-        Router.delete('/', BinByIdHandler, [AuthBearerMiddleware]).withName('bin.delete');
+        Router.put('/', BinByIdHandler, [AuthBearerMiddleware, OauthScopeMiddleware(['bin'])]).withName('bin.update');
+        Router.patch('/', BinByIdHandler, [AuthBearerMiddleware, OauthScopeMiddleware(['bin'])]).withName('bin.patch');
+        Router.delete('/', BinByIdHandler, [AuthBearerMiddleware, OauthScopeMiddleware(['bin'])]).withName('bin.delete');
     });
 });
 

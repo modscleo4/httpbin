@@ -1,22 +1,27 @@
 import { Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
-import { generateJWT } from "apiframework/util/jwt.js";
+import { generateJWT, Payload } from "apiframework/util/jwt.js";
+import { generateUUID } from "apiframework/util/uuid.js";
 
 export default class Oauth2Handler extends Handler {
     async handlePasswordGrant(req: Request): Promise<Response> {
         if (!req.parsedBody.username || !req.parsedBody.password) {
-            throw new HTTPError("Invalid request.", 400);
+            throw new HTTPError("Invalid request.", 401);
         }
 
         const scope = req.parsedBody.scope || "";
 
+        const issuedAt = Date.now();
         const expires = 1000 * 60 * 60 * 1; // 1 hour
 
-        const data = {
+        const data: (Payload & { scopes: string[]; }) = {
+            iss: "http://localhost:3000",
             sub: req.parsedBody.username,
-            exp: Math.ceil((Date.now() + expires) / 1000),
-            iat: Math.floor(Date.now() / 1000),
-            scope,
+            exp: Math.ceil((issuedAt + expires) / 1000),
+            iat: Math.floor(issuedAt / 1000),
+            jti: generateUUID(),
+
+            scopes: scope.split(' '),
         };
 
         const jwt = generateJWT(data);
