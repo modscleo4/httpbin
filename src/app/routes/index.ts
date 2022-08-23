@@ -4,7 +4,9 @@ import Oauth2Handler from '../handler/Oauth2Handler.js';
 import BinHandler from '../handler/BinHandler.js';
 import BinByIdHandler from '../handler/BinByIdHandler.js';
 
-import { AuthBearerMiddleware, HTTPErrorMiddleware, OauthScopeMiddleware, ParseBodyMiddleware } from 'apiframework/middlewares';
+import { AuthBearerMiddleware, HTTPErrorMiddleware, ParseBodyMiddleware } from 'apiframework/middlewares';
+import AuthHandler from '../handler/AuthHandler.js';
+import OauthScopeMiddleware from '../middleware/OauthScopeMiddleware.js';
 
 const Router = new RouterWrapper();
 
@@ -18,6 +20,8 @@ const Router = new RouterWrapper();
  */
 
 Router.pipeline([ParseBodyMiddleware, HTTPErrorMiddleware]);
+
+Router.post('/auth/register', AuthHandler).withName('auth.register');
 
 Router.post('/oauth/token', Oauth2Handler).withName('oauth.token');
 

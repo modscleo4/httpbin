@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import { readFileSync } from 'fs';
 
 import { Server } from "apiframework/app";
+import { Scrypt } from 'apiframework/hash';
 import { ConsoleLogger, LogLevel } from 'apiframework/log';
 import { configJWT, JWTAlgorithm } from 'apiframework/util/jwt.js';
 
@@ -14,7 +15,7 @@ dotenv.config({ override: true });
 const jwt = {
     alg: process.env.JWT_ALGORITHM || 'HS256',
 
-    secret: process.env.JWT_SECRET || '',
+    secret: process.env.JWT_SECRET || 'secret',
     publicKey: process.env.JWT_PUBLIC_KEY && readFileSync(process.env.JWT_PUBLIC_KEY, { encoding: 'utf8' }),
     privateKey: process.env.JWT_PRIVATE_KEY && readFileSync(process.env.JWT_PRIVATE_KEY, { encoding: 'utf8' }),
 };
@@ -25,6 +26,7 @@ export const server = new Server({
     providers: {
         router,
         logger: new ConsoleLogger({ minLevel: LogLevel.DEBUG }),
+        hash: new Scrypt()
     },
 });
 

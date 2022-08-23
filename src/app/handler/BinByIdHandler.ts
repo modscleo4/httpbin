@@ -1,7 +1,7 @@
 import { Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
 
-import Bin from "../model/Bin.js";
+import Bin from "../entity/Bin.js";
 import { Payload } from "apiframework/util/jwt.js";
 
 export default class BinByIdHandler extends Handler {
@@ -11,7 +11,11 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", 400);
         }
 
-        const bin = await Bin.get(id);
+        const bin = await Bin.get({
+            where: {
+                id
+            }
+        });
         if (!bin) {
             throw new HTTPError('Bin not found.', 404);
         }
@@ -25,7 +29,11 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", 400);
         }
 
-        const bin = await Bin.get(id);
+        const bin = await Bin.get({
+            where: {
+                id
+            }
+        });
 
         if (!bin) {
             throw new HTTPError('Bin not found.', 404);
@@ -33,7 +41,7 @@ export default class BinByIdHandler extends Handler {
 
         const jwt: Payload = req.container.get('jwt');
 
-        if (bin.username !== jwt!.sub) {
+        if (bin.user_id !== jwt!.sub) {
             throw new HTTPError('You are not the owner of this bin.', 403);
         }
 
@@ -54,7 +62,11 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", 400);
         }
 
-        const bin = await Bin.get(id);
+        const bin = await Bin.get({
+            where: {
+                id
+            }
+        });
 
         if (!bin) {
             throw new HTTPError('Bin not found.', 404);
@@ -62,7 +74,7 @@ export default class BinByIdHandler extends Handler {
 
         const jwt: Payload = req.container.get('jwt');
 
-        if (bin.username !== jwt!.sub) {
+        if (bin.user_id !== jwt!.sub) {
             throw new HTTPError('You are not the owner of this bin.', 403);
         }
 
@@ -83,7 +95,11 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", 400);
         }
 
-        const bin = await Bin.get(id);
+        const bin = await Bin.get({
+            where: {
+                id
+            }
+        });
 
         if (!bin) {
             throw new HTTPError('Bin not found.', 404);
@@ -91,7 +107,7 @@ export default class BinByIdHandler extends Handler {
 
         const jwt: Payload = req.container.get('jwt');
 
-        if (bin.username !== jwt!.sub) {
+        if (bin.user_id !== jwt!.sub) {
             throw new HTTPError('You are not the owner of this bin.', 403);
         }
 
