@@ -4,7 +4,7 @@ import Oauth2Handler from '../handler/Oauth2Handler.js';
 import BinHandler from '../handler/BinHandler.js';
 import BinByIdHandler from '../handler/BinByIdHandler.js';
 
-import { AuthBearerMiddleware, HTTPErrorMiddleware, ParseBodyMiddleware } from 'apiframework/middlewares';
+import { AuthBearerMiddleware } from 'apiframework/middlewares';
 import AuthHandler from '../handler/AuthHandler.js';
 import OauthScopeMiddleware from '../middleware/OauthScopeMiddleware.js';
 
@@ -14,12 +14,10 @@ const Router = new RouterWrapper();
  * Routing
  *
  * Define your routes here
- * Use the Router.get(), Router.post(), Router.put(), Router.patch, Router.delete() methods to define your routes
+ * Use the Router.get(), Router.post(), Router.put(), Router.patch(), Router.delete() methods to define your routes
  * Use the Router.group() method to group routes under a common prefix
  * Use the Router.usePublicPath() method to define a public path to serve static files from
  */
-
-Router.pipeline([ParseBodyMiddleware, HTTPErrorMiddleware]);
 
 Router.post('/auth/register', AuthHandler).withName('auth.register');
 

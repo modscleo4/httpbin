@@ -2,11 +2,21 @@ import { Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
 import { generateJWT, Payload } from "apiframework/util/jwt.js";
 import { generateUUID } from "apiframework/util/uuid.js";
-import User from "../entity/User.js";
 import { Server } from "apiframework/app";
 
+import User from "../entity/User.js";
+import { Hash } from "apiframework/hash";
+
 export default class Oauth2Handler extends Handler {
-    async handlePasswordGrant(req: Request, server: Server): Promise<Response> {
+    private hash: Hash;
+
+    constructor(server: Server) {
+        super();
+
+        this.hash = server.providers.get('Hash');
+    }
+
+    async handlePasswordGrant(req: Request): Promise<Response> {
         if (!req.parsedBody.username || !req.parsedBody.password) {
             throw new HTTPError("Invalid request.", 401);
         }
@@ -21,7 +31,7 @@ export default class Oauth2Handler extends Handler {
             throw new HTTPError("Wrong username or password.", 401);
         }
 
-        if (!server.hash.verify(user.password, req.parsedBody.password)) {
+        if (!this.hash.verify(user.password, req.parsedBody.password)) {
             throw new HTTPError("Wrong username or password.", 401);
         }
 
@@ -55,14 +65,14 @@ export default class Oauth2Handler extends Handler {
         throw new HTTPError("Invalid request.", 400);
     }
 
-    async handle(req: Request, server: Server): Promise<Response> {
+    async handle(req: Request): Promise<Response> {
         if (!req.parsedBody || !req.parsedBody.grant_type) {
             throw new HTTPError("Invalid request.", 400);
         }
 
         switch (req.parsedBody.grant_type) {
             case 'password':
-                return await this.handlePasswordGrant(req, server);
+                return await this.handlePasswordGrant(req);
             case 'refresh_token':
                 return await this.handleRefreshTokenGrant(req);
         }

@@ -1,9 +1,10 @@
 import { Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
 import { generateUUID } from "apiframework/util/uuid.js";
+import { Payload } from "apiframework/util/jwt.js";
 
 import Bin from "../entity/Bin.js";
-import { Payload } from "apiframework/util/jwt.js";
+import { Prisma } from "@prisma/client";
 
 export default class BinHandler extends Handler {
     async get(req: Request): Promise<Response> {
@@ -21,7 +22,7 @@ export default class BinHandler extends Handler {
 
         const jwt: Payload = req.container.get('jwt');
 
-        const data = {
+        const data: Prisma.BinCreateInput = {
             id,
             user: {
                 connect: { id: jwt!.sub },

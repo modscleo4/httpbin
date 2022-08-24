@@ -1,34 +1,20 @@
 import dotenv from 'dotenv';
-import { readFileSync } from 'fs';
 
 import { Server } from "apiframework/app";
-import { Scrypt } from 'apiframework/hash';
-import { ConsoleLogger, LogLevel } from 'apiframework/log';
-import { configJWT, JWTAlgorithm } from 'apiframework/util/jwt.js';
 
-import router from './app/routes/index.js';
 import { prisma } from './app/lib/Prisma.js';
+import { initJWT } from './app/lib/jwt.js';
+import pipeline from './pipeline.js';
+import providers from './providers.js';
 
-dotenv.config({ path: './.env.dev', override: true });
 dotenv.config({ override: true });
+dotenv.config({ path: './.env.dev', override: true });
 
-const jwt = {
-    alg: process.env.JWT_ALGORITHM || 'HS256',
+export const server = new Server();
 
-    secret: process.env.JWT_SECRET || 'secret',
-    publicKey: process.env.JWT_PUBLIC_KEY && readFileSync(process.env.JWT_PUBLIC_KEY, { encoding: 'utf8' }),
-    privateKey: process.env.JWT_PRIVATE_KEY && readFileSync(process.env.JWT_PRIVATE_KEY, { encoding: 'utf8' }),
-};
-
-configJWT(JWTAlgorithm[jwt.alg as keyof typeof JWTAlgorithm], ['HS256', 'HS384', 'HS512'].includes(jwt.alg) ? jwt.secret : ['RS256', 'RS384', 'RS512', 'ES256', 'ES384', 'ES512', 'PS256', 'PS384', 'PS512'].includes(jwt.alg) ? jwt.privateKey || '' : '');
-
-export const server = new Server({
-    providers: {
-        router,
-        logger: new ConsoleLogger({ minLevel: LogLevel.DEBUG }),
-        hash: new Scrypt()
-    },
-});
+initJWT();
+providers(server);
+pipeline(server);
 
 const port = parseInt(process.env.PORT || '3000');
 
