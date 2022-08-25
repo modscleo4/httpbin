@@ -2,7 +2,7 @@ import { Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
 import { Payload } from "apiframework/util/jwt.js";
 
-import Bin from "../entity/Bin.js";
+import Bin from "../../entity/Bin.js";
 
 export default class BinByIdHandler extends Handler {
     async get(req: Request): Promise<Response> {

@@ -1,12 +1,13 @@
 import { Router as RouterWrapper } from 'apiframework/router';
 
 import Oauth2Handler from '../handler/Oauth2Handler.js';
-import BinHandler from '../handler/BinHandler.js';
-import BinByIdHandler from '../handler/BinByIdHandler.js';
+import BinHandler from '../handler/Bin/BinHandler.js';
+import BinByIdHandler from '../handler/Bin/BinByIdHandler.js';
 
 import { AuthBearerMiddleware } from 'apiframework/middlewares';
 import AuthHandler from '../handler/AuthHandler.js';
 import OauthScopeMiddleware from '../middleware/OauthScopeMiddleware.js';
+import InfoHandler from '../handler/InfoHandler.js';
 
 const Router = new RouterWrapper();
 
@@ -18,6 +19,8 @@ const Router = new RouterWrapper();
  * Use the Router.group() method to group routes under a common prefix
  * Use the Router.usePublicPath() method to define a public path to serve static files from
  */
+
+Router.get('/', InfoHandler);
 
 Router.post('/auth/register', AuthHandler).withName('auth.register');
 
@@ -34,7 +37,5 @@ Router.group('/bin', () => {
         Router.delete('/', BinByIdHandler, [AuthBearerMiddleware, OauthScopeMiddleware(['bin'])]).withName('bin.delete');
     });
 });
-
-Router.usePublicPath('./public');
 
 export default Router;

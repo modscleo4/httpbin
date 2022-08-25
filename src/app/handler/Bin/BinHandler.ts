@@ -3,7 +3,7 @@ import { HTTPError } from "apiframework/errors";
 import { generateUUID } from "apiframework/util/uuid.js";
 import { Payload } from "apiframework/util/jwt.js";
 
-import Bin from "../entity/Bin.js";
+import Bin from "../../entity/Bin.js";
 import { Prisma } from "@prisma/client";
 
 export default class BinHandler extends Handler {

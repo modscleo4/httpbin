@@ -9,6 +9,7 @@ import {
     MethodNotAllowedMiddleware,
     NotFoundMiddleware,
     ParseBodyMiddleware,
+    PublicPathMiddleware,
     ReadBodyMiddleware,
     RouterMiddleware
 } from 'apiframework/middlewares';
@@ -67,6 +68,10 @@ export default function pipeline(server: Server): void {
 
     /**
      * Called when no route was found
+     *
+     * When no route matches the request, PublicPathMiddleware will try to find a matching file in the public directory.
+     * The public directory is relative to the project root.
      */
+    server.pipe(PublicPathMiddleware('./public'));
     server.pipe(NotFoundMiddleware);
 }
