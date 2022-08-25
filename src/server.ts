@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import { Server } from "apiframework/app";
 
 import { prisma } from './app/lib/Prisma.js';
-import { initJWT } from './app/lib/jwt.js';
 import pipeline from './pipeline.js';
 import providers from './providers.js';
 
@@ -12,7 +11,6 @@ dotenv.config({ path: './.env.dev', override: true });
 
 export const server = new Server();
 
-initJWT();
 providers(server);
 pipeline(server);
 

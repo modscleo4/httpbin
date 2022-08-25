@@ -10,7 +10,7 @@ export default class AuthHandler extends Handler {
     private hash: Hash;
 
     constructor(server: Server) {
-        super();
+        super(server);
 
         this.hash = server.providers.get('Hash');
     }

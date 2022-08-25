@@ -13,7 +13,7 @@ import {
     RouterMiddleware
 } from 'apiframework/middlewares';
 
-export default function pipeline(server: Server) {
+export default function pipeline(server: Server): void {
     /**
      * Handle any uncaught Error during the request processing
      *
@@ -62,11 +62,11 @@ export default function pipeline(server: Server) {
      */
     server.pipe(DispatchMiddleware);
 
-    // Add here any middlewares that should be executed after the route handler
+    // Add here any middlewares that should be executed when the DispatchMiddleware fails to find a route
     //
 
     /**
-     * Called when there's no more middleware to run
+     * Called when no route was found
      */
     server.pipe(NotFoundMiddleware);
 }

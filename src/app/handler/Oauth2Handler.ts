@@ -1,19 +1,22 @@
 import { Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
-import { generateJWT, Payload } from "apiframework/util/jwt.js";
+import { Payload } from "apiframework/util/jwt.js";
 import { generateUUID } from "apiframework/util/uuid.js";
 import { Server } from "apiframework/app";
 
 import User from "../entity/User.js";
 import { Hash } from "apiframework/hash";
+import { JWT } from "apiframework/jwt";
 
 export default class Oauth2Handler extends Handler {
+    private jwt: JWT;
     private hash: Hash;
 
     constructor(server: Server) {
-        super();
+        super(server);
 
         this.hash = server.providers.get('Hash');
+        this.jwt = server.providers.get('JWT');
     }
 
     async handlePasswordGrant(req: Request): Promise<Response> {
@@ -51,7 +54,7 @@ export default class Oauth2Handler extends Handler {
             scopes: scope.split(' '),
         };
 
-        const jwt = generateJWT(data);
+        const jwt = this.jwt.sign(data);
 
         return Response.json({
             access_token: jwt,
