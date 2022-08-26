@@ -11,7 +11,6 @@
     "start": "node .",
     "test": "ts-node-esm src/test/index.ts",
     "cannon": "npx autocannon -c 500 -d 30 --renderStatusCodes --latency localhost:3000/bin",
-
     "generateKeys": "node ./bin/generateKeys.js"
   },
   "keywords": [],
@@ -23,7 +22,7 @@
     "nodemon": "^2.0.19",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",
-    "typescript": "^4.8.2"
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "@prisma/client": "^4.2.1",
