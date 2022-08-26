@@ -27,6 +27,7 @@ import {
     ParseBodyMiddleware,
     PublicPathMiddleware,
     ReadBodyMiddleware,
+    RequestLoggerMiddleware,
     RouterMiddleware
 } from 'apiframework/middlewares';
 
@@ -36,7 +37,12 @@ export default function pipeline(server: Server): void {
      *
      * This middleware should be the first middleware in the pipeline
      */
-    server.pipe(ErrorMiddleware);
+    server.pipe(ErrorMiddleware({ exposeErrors: !!process.env.EXPOSE_ERRORS, logUnhandledErrors: false }));
+
+    /**
+     * Log every request using the Logger Service Provider
+     */
+    server.pipe(RequestLoggerMiddleware);
 
     /**
      * Handle any uncaught HTTPError, and return a JSON response
@@ -88,6 +94,6 @@ export default function pipeline(server: Server): void {
      * When no route matches the request, PublicPathMiddleware will try to find a matching file in the public directory.
      * The public directory is relative to the project root.
      */
-    server.pipe(PublicPathMiddleware('./public'));
+    server.pipe(PublicPathMiddleware({ path: './public' }));
     server.pipe(NotFoundMiddleware);
 }
