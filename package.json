@@ -5,9 +5,9 @@
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "ttsc",
     "clean": "tsc -b --clean",
-    "dev": "nodemon -r tsconfig-paths/register --experimental-specifier-resolution=node --inspect src/server.ts",
+    "dev": "nodemon --inspect src/server.ts",
     "start": "node .",
     "test": "ts-node-esm src/test/index.ts",
     "cannon": "npx autocannon -c 500 -d 30 --renderStatusCodes --latency localhost:3000/bin",
@@ -22,7 +22,9 @@
     "nodemon": "^2.0.19",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",
-    "typescript": "^4.7.4"
+    "ttypescript": "^1.5.13",
+    "typescript": "^4.7.4",
+    "typescript-transform-paths": "^3.3.1"
   },
   "dependencies": {
     "@prisma/client": "^4.2.1",

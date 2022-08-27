@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { Router as RouterWrapper } from 'apiframework/router';
+import { Router as RouterWrapper } from "apiframework/router";
 
-import Oauth2Handler from '../handler/Oauth2Handler.js';
-import BinHandler from '../handler/Bin/BinHandler.js';
-import BinByIdHandler from '../handler/Bin/BinByIdHandler.js';
+import Oauth2Handler from "@app/handler/Oauth2Handler.js";
+import BinHandler from "@app/handler/Bin/BinHandler.js";
+import BinByIdHandler from "@app/handler/Bin/BinByIdHandler.js";
+import AuthHandler from "@app/handler/AuthHandler.js";
+import InfoHandler from "@app/handler/InfoHandler.js";
 
-import { AuthBearerMiddleware } from 'apiframework/middlewares';
-import AuthHandler from '../handler/AuthHandler.js';
-import OauthScopeMiddleware from '../middleware/OauthScopeMiddleware.js';
-import InfoHandler from '../handler/InfoHandler.js';
+import { AuthBearerMiddleware } from "apiframework/middlewares";
+import OauthScopeMiddleware from "@app/middleware/OauthScopeMiddleware.js";
 
 const OauthScopeMiddlewareBin = OauthScopeMiddleware({ scopes: ['bin'] });
 
@@ -41,6 +41,7 @@ const Router = new RouterWrapper();
 Router.get('/', InfoHandler);
 
 Router.post('/auth/register', AuthHandler).withName('auth.register');
+Router.get('/auth/user', AuthHandler, [AuthBearerMiddleware]).withName('auth.user');
 
 Router.post('/oauth/token', Oauth2Handler).withName('oauth.token');
 

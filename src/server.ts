@@ -18,7 +18,8 @@ import dotenv from 'dotenv';
 
 import { Server } from "apiframework/app";
 
-import { prisma } from './app/lib/Prisma.js';
+import { prisma } from '@core/lib/Prisma.js';
+
 import pipeline from './pipeline.js';
 import providers from './providers.js';
 

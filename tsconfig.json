@@ -11,10 +11,28 @@
         "esModuleInterop": true,
         "baseUrl": ".",
         "paths": {
-            "apiframework/*": [
-                "node_modules/apiframework/dist/*"
-            ]
-        }
+            "@app/*": [
+                "./src/app/*"
+            ],
+            "@core/*": [
+                "./src/core/*"
+            ],
+        },
+        "plugins": [
+            {
+                "transform": "typescript-transform-paths",
+                "exclude": [
+                    "**/node_modules/**"
+                ]
+            },
+            {
+                "transform": "typescript-transform-paths",
+                "exclude": [
+                    "**/node_modules/**"
+                ],
+                "afterDeclarations": true
+            }
+        ]
     },
     "include": [
         "src/**/*"

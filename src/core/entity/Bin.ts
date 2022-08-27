@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-import { PrismaClient } from '@prisma/client';
-
-export const prisma = new PrismaClient();
+export { Bin } from '@prisma/client';

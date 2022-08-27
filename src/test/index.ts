@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import assert from 'assert';
-import { describe, it } from 'node:test';
+import assert from "assert";
+import { describe, it } from "node:test";
 
 process.env.PORT = '3000';
 

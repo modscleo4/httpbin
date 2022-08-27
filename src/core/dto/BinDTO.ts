@@ -15,36 +15,39 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { prisma } from '../lib/Prisma.js';
 
-export default class User {
-    static async all(args?: Prisma.UserFindManyArgs) {
-        return await prisma.user.findMany(args);
+import { prisma } from '@core/lib/Prisma.js';
+import { Bin } from '@core/entity/Bin.js';
+
+export default class BinDTO {
+    static async all(args?: Prisma.BinFindManyArgs): Promise<Bin[]> {
+        return await prisma.bin.findMany(args);
     }
 
-    static async create(data: Prisma.UserCreateInput) {
-        return await prisma.user.create({
+    static async create(data: Prisma.BinCreateInput): Promise<Bin> {
+        return await prisma.bin.create({
             data
         });
     }
 
-    static async get(args: Prisma.UserFindFirstArgs) {
-        return await prisma.user.findFirst(args);
+    static async get(args: Prisma.BinFindFirstArgs): Promise<Bin | null> {
+        return await prisma.bin.findFirst(args);
     }
 
-    static async save(id: string, { username }: { username: string; }) {
-        return await prisma.user.update({
+    static async save(id: string, { user_id, content }: { user_id: string, content: any; }): Promise<Bin> {
+        return await prisma.bin.update({
             where: {
                 id
             },
             data: {
-                username,
+                user_id,
+                content
             }
         });
     }
 
-    static async delete(id: string) {
-        return await prisma.user.delete({
+    static async delete(id: string): Promise<Bin> {
+        return await prisma.bin.delete({
             where: {
                 id
             }

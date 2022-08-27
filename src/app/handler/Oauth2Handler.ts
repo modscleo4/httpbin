@@ -19,20 +19,19 @@ import { HTTPError } from "apiframework/errors";
 import { Payload } from "apiframework/util/jwt.js";
 import { generateUUID } from "apiframework/util/uuid.js";
 import { Server } from "apiframework/app";
-import { Hash } from "apiframework/hash";
 import { JWT } from "apiframework/jwt";
 
-import User from "../entity/User.js";
+import { Auth } from "apiframework/auth";
 
 export default class Oauth2Handler extends Handler {
-    private jwt: JWT;
-    private hash: Hash;
+    #jwt: JWT;
+    #auth: Auth;
 
     constructor(server: Server) {
         super(server);
 
-        this.hash = server.providers.get('Hash');
-        this.jwt = server.providers.get('JWT');
+        this.#jwt = server.providers.get('JWT');
+        this.#auth = server.providers.get('Auth');
     }
 
     async handlePasswordGrant(req: Request): Promise<Response> {
@@ -40,17 +39,9 @@ export default class Oauth2Handler extends Handler {
             throw new HTTPError("Invalid request.", 401);
         }
 
-        const user = await User.get({
-            where: {
-                username: req.parsedBody.username
-            }
-        });
+        const user = await this.#auth.attempt(req.parsedBody.username, req.parsedBody.password);
 
         if (!user) {
-            throw new HTTPError("Wrong username or password.", 401);
-        }
-
-        if (!this.hash.verify(user.password, req.parsedBody.password)) {
             throw new HTTPError("Wrong username or password.", 401);
         }
 
@@ -59,7 +50,7 @@ export default class Oauth2Handler extends Handler {
         const issuedAt = Date.now();
         const expires = 1000 * 60 * 60 * 1; // 1 hour
 
-        const data: (Payload & { username: string, scopes: string[]; }) = {
+        const data: (Payload & { username: string; scopes: string[]; }) = {
             iss: "http://localhost:3000",
             sub: user.id,
             exp: Math.ceil((issuedAt + expires) / 1000),
@@ -70,7 +61,7 @@ export default class Oauth2Handler extends Handler {
             scopes: scope.split(' '),
         };
 
-        const jwt = this.jwt.sign(data);
+        const jwt = this.#jwt.sign(data);
 
         return Response.json({
             access_token: jwt,

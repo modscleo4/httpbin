@@ -1,5 +1,5 @@
-import crypto from 'crypto';
-import { writeFileSync } from 'fs';
+import crypto from "crypto";
+import { writeFileSync } from "fs";
 
 function generateKeypair() {
     return crypto.generateKeyPairSync('rsa', {

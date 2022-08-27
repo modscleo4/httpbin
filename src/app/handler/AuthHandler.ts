@@ -20,15 +20,18 @@ import { Hash } from "apiframework/hash";
 import { Handler, Request, Response } from "apiframework/http";
 import { generateUUID } from "apiframework/util/uuid.js";
 
-import User from "../entity/User.js";
+import UserDTO from "@core/dto/UserDTO.js";
+import { Auth } from "apiframework/auth";
 
 export default class AuthHandler extends Handler {
-    private hash: Hash;
+    #hash: Hash;
+    #auth: Auth;
 
     constructor(server: Server) {
         super(server);
 
-        this.hash = server.providers.get('Hash');
+        this.#hash = server.providers.get('Hash');
+        this.#auth = server.providers.get('Auth');
     }
 
     async register(req: Request): Promise<Response> {
@@ -36,7 +39,7 @@ export default class AuthHandler extends Handler {
             throw new HTTPError("Invalid request.", 400);
         }
 
-        const user = await User.get({
+        const user = await UserDTO.get({
             where: {
                 username: req.parsedBody.username
             }
@@ -46,9 +49,9 @@ export default class AuthHandler extends Handler {
             throw new HTTPError("Username already taken.", 400);
         }
 
-        const password = this.hash.hash(req.parsedBody.password);
+        const password = this.#hash.hash(req.parsedBody.password);
 
-        await User.create({
+        await UserDTO.create({
             id: generateUUID(),
             username: req.parsedBody.username,
             password,
@@ -57,9 +60,18 @@ export default class AuthHandler extends Handler {
         return Response.status(201);
     }
 
+    async user(req: Request): Promise<Response> {
+        // Since the AuthBearer middleware is used, the user is already authenticated
+        const user = this.#auth.user(req)!;
+
+        return Response.json({user, jwt: req.container.get('jwt')});
+    }
+
     async handle(req: Request): Promise<Response> {
         if (req.path === '/auth/register/') {
             return await this.register(req);
+        } else if (req.path === '/auth/user/') {
+            return await this.user(req);
         }
 
         return Response.status(404);

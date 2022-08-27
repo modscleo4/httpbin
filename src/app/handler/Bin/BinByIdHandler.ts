@@ -18,7 +18,7 @@ import { Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
 import { Payload } from "apiframework/util/jwt.js";
 
-import Bin from "../../entity/Bin.js";
+import BinDTO from "@core/dto/BinDTO.js";
 
 export default class BinByIdHandler extends Handler {
     async get(req: Request): Promise<Response> {
@@ -27,7 +27,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", 400);
         }
 
-        const bin = await Bin.get({
+        const bin = await BinDTO.get({
             where: {
                 id
             }
@@ -45,7 +45,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", 400);
         }
 
-        const bin = await Bin.get({
+        const bin = await BinDTO.get({
             where: {
                 id
             }
@@ -67,7 +67,7 @@ export default class BinByIdHandler extends Handler {
 
         bin.content = req.parsedBody;
 
-        await Bin.save(bin.id, bin);
+        await BinDTO.save(bin.id, bin);
 
         return Response.json(bin);
     }
@@ -78,7 +78,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", 400);
         }
 
-        const bin = await Bin.get({
+        const bin = await BinDTO.get({
             where: {
                 id
             }
@@ -100,7 +100,7 @@ export default class BinByIdHandler extends Handler {
 
         bin.content = req.parsedBody;
 
-        await Bin.save(bin.id, bin);
+        await BinDTO.save(bin.id, bin);
 
         return Response.json(bin);
     }
@@ -111,7 +111,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", 400);
         }
 
-        const bin = await Bin.get({
+        const bin = await BinDTO.get({
             where: {
                 id
             }
@@ -127,7 +127,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError('You are not the owner of this bin.', 403);
         }
 
-        await Bin.delete(bin.id);
+        await BinDTO.delete(bin.id);
 
         return Response.empty();
     }

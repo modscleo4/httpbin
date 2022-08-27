@@ -19,12 +19,13 @@ import { HTTPError } from "apiframework/errors";
 import { generateUUID } from "apiframework/util/uuid.js";
 import { Payload } from "apiframework/util/jwt.js";
 
-import Bin from "../../entity/Bin.js";
 import { Prisma } from "@prisma/client";
+
+import BinDTO from "@core/dto/BinDTO.js";
 
 export default class BinHandler extends Handler {
     async get(req: Request): Promise<Response> {
-        const data = await Bin.all();
+        const data = await BinDTO.all();
 
         return Response.json(data);
     }
@@ -46,7 +47,7 @@ export default class BinHandler extends Handler {
             content: req.parsedBody
         };
 
-        const saved = await Bin.create(data);
+        const saved = await BinDTO.create(data);
         if (!saved) {
             throw new HTTPError("Failed to save bin.", 500);
         }

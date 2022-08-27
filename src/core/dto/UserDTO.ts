@@ -14,38 +14,39 @@
  * limitations under the License.
  */
 
-import { Prisma } from '@prisma/client';
-import { prisma } from '../lib/Prisma.js';
+import { Prisma } from "@prisma/client";
 
-export default class Bin {
-    static async all(args?: Prisma.BinFindManyArgs) {
-        return await prisma.bin.findMany(args);
+import { prisma } from "@core/lib/Prisma.js";
+import { User } from "@core/entity/User.js";
+
+export default class UserDTO {
+    static async all(args?: Prisma.UserFindManyArgs): Promise<User[]> {
+        return await prisma.user.findMany(args);
     }
 
-    static async create(data: Prisma.BinCreateInput) {
-        return await prisma.bin.create({
+    static async create(data: Prisma.UserCreateInput): Promise<User> {
+        return await prisma.user.create({
             data
         });
     }
 
-    static async get(args: Prisma.BinFindFirstArgs) {
-        return await prisma.bin.findFirst(args);
+    static async get(args: Prisma.UserFindFirstArgs): Promise<User | null> {
+        return await prisma.user.findFirst(args);
     }
 
-    static async save(id: string, { user_id, content }: { user_id: string, content: any }) {
-        return await prisma.bin.update({
+    static async save(id: string, { username }: { username: string; }): Promise<User> {
+        return await prisma.user.update({
             where: {
                 id
             },
             data: {
-                user_id,
-                content
+                username,
             }
         });
     }
 
-    static async delete(id: string) {
-        return await prisma.bin.delete({
+    static async delete(id: string): Promise<User> {
+        return await prisma.user.delete({
             where: {
                 id
             }
