@@ -17,7 +17,7 @@
 import { Server } from "apiframework/app";
 import { HTTPError } from "apiframework/errors";
 import { Hash } from "apiframework/hash";
-import { Handler, Request, Response } from "apiframework/http";
+import { EStatusCode, Handler, Request, Response } from "apiframework/http";
 import { generateUUID } from "apiframework/util/uuid.js";
 
 import UserDTO from "@core/dto/UserDTO.js";
@@ -36,7 +36,7 @@ export default class AuthHandler extends Handler {
 
     async register(req: Request): Promise<Response> {
         if (!req.parsedBody.username || !req.parsedBody.password) {
-            throw new HTTPError("Invalid request.", 400);
+            throw new HTTPError("Invalid request.", EStatusCode.BAD_REQUEST);
         }
 
         const user = await UserDTO.get({
@@ -46,7 +46,7 @@ export default class AuthHandler extends Handler {
         });
 
         if (user) {
-            throw new HTTPError("Username already taken.", 400);
+            throw new HTTPError("Username already taken.", EStatusCode.BAD_REQUEST);
         }
 
         const password = this.#hash.hash(req.parsedBody.password);
@@ -57,7 +57,7 @@ export default class AuthHandler extends Handler {
             password,
         });
 
-        return Response.status(201);
+        return Response.status(EStatusCode.CREATED);
     }
 
     async user(req: Request): Promise<Response> {
@@ -74,6 +74,6 @@ export default class AuthHandler extends Handler {
             return await this.user(req);
         }
 
-        return Response.status(404);
+        return Response.status(EStatusCode.NOT_FOUND);
     }
 }

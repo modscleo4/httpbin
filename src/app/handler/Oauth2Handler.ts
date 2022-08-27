@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Handler, Request, Response } from "apiframework/http";
+import { EStatusCode, Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
 import { Payload } from "apiframework/util/jwt.js";
 import { generateUUID } from "apiframework/util/uuid.js";
@@ -36,13 +36,13 @@ export default class Oauth2Handler extends Handler {
 
     async handlePasswordGrant(req: Request): Promise<Response> {
         if (!req.parsedBody.username || !req.parsedBody.password) {
-            throw new HTTPError("Invalid request.", 401);
+            throw new HTTPError("Invalid request.", EStatusCode.BAD_REQUEST);
         }
 
         const user = await this.#auth.attempt(req.parsedBody.username, req.parsedBody.password);
 
         if (!user) {
-            throw new HTTPError("Wrong username or password.", 401);
+            throw new HTTPError("Wrong username or password.", EStatusCode.BAD_REQUEST);
         }
 
         const scope = req.parsedBody.scope || "";
@@ -68,16 +68,16 @@ export default class Oauth2Handler extends Handler {
             expires_in: expires / 1000,
             token_type: 'Bearer',
             scope,
-        }).withStatus(201);
+        }).withStatus(EStatusCode.CREATED);
     }
 
     async handleRefreshTokenGrant(req: Request): Promise<Response> {
-        throw new HTTPError("Invalid request.", 400);
+        throw new HTTPError("Invalid request.", EStatusCode.UNAUTHORIZED);
     }
 
     async handle(req: Request): Promise<Response> {
         if (!req.parsedBody || !req.parsedBody.grant_type) {
-            throw new HTTPError("Invalid request.", 400);
+            throw new HTTPError("Invalid request.", EStatusCode.UNAUTHORIZED);
         }
 
         switch (req.parsedBody.grant_type) {
@@ -87,6 +87,6 @@ export default class Oauth2Handler extends Handler {
                 return await this.handleRefreshTokenGrant(req);
         }
 
-        throw new HTTPError("Invalid request.", 400);
+        throw new HTTPError("Invalid request.", EStatusCode.UNAUTHORIZED);
     }
 }

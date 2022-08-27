@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Handler, Request, Response } from "apiframework/http";
+import { EStatusCode, Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
 import { Payload } from "apiframework/util/jwt.js";
 
@@ -24,7 +24,7 @@ export default class BinByIdHandler extends Handler {
     async get(req: Request): Promise<Response> {
         const id = req.params.get('id');
         if (!id) {
-            throw new HTTPError("Invalid ID.", 400);
+            throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
         }
 
         const bin = await BinDTO.get({
@@ -33,7 +33,7 @@ export default class BinByIdHandler extends Handler {
             }
         });
         if (!bin) {
-            throw new HTTPError('Bin not found.', 404);
+            throw new HTTPError('Bin not found.', EStatusCode.NOT_FOUND);
         }
 
         return Response.json(bin);
@@ -42,7 +42,7 @@ export default class BinByIdHandler extends Handler {
     async put(req: Request): Promise<Response> {
         const id = req.params.get('id');
         if (!id) {
-            throw new HTTPError("Invalid ID.", 400);
+            throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
         }
 
         const bin = await BinDTO.get({
@@ -52,17 +52,17 @@ export default class BinByIdHandler extends Handler {
         });
 
         if (!bin) {
-            throw new HTTPError('Bin not found.', 404);
+            throw new HTTPError('Bin not found.', EStatusCode.NOT_FOUND);
         }
 
         const jwt: Payload = req.container.get('jwt');
 
         if (bin.user_id !== jwt!.sub) {
-            throw new HTTPError('You are not the owner of this bin.', 403);
+            throw new HTTPError('You are not the owner of this bin.', EStatusCode.FORBIDDEN);
         }
 
         if (!req.parsedBody) {
-            throw new HTTPError("Invalid body.", 400);
+            throw new HTTPError("Invalid body.", EStatusCode.BAD_REQUEST);
         }
 
         bin.content = req.parsedBody;
@@ -75,7 +75,7 @@ export default class BinByIdHandler extends Handler {
     async patch(req: Request): Promise<Response> {
         const id = req.params.get('id');
         if (!id) {
-            throw new HTTPError("Invalid ID.", 400);
+            throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
         }
 
         const bin = await BinDTO.get({
@@ -85,17 +85,17 @@ export default class BinByIdHandler extends Handler {
         });
 
         if (!bin) {
-            throw new HTTPError('Bin not found.', 404);
+            throw new HTTPError('Bin not found.', EStatusCode.NOT_FOUND);
         }
 
         const jwt: Payload = req.container.get('jwt');
 
         if (bin.user_id !== jwt!.sub) {
-            throw new HTTPError('You are not the owner of this bin.', 403);
+            throw new HTTPError('You are not the owner of this bin.', EStatusCode.FORBIDDEN);
         }
 
         if (!req.parsedBody) {
-            throw new HTTPError("Invalid body.", 400);
+            throw new HTTPError("Invalid body.", EStatusCode.BAD_REQUEST);
         }
 
         bin.content = req.parsedBody;
@@ -108,7 +108,7 @@ export default class BinByIdHandler extends Handler {
     async delete(req: Request): Promise<Response> {
         const id = req.params.get('id');
         if (!id) {
-            throw new HTTPError("Invalid ID.", 400);
+            throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
         }
 
         const bin = await BinDTO.get({
@@ -118,13 +118,13 @@ export default class BinByIdHandler extends Handler {
         });
 
         if (!bin) {
-            throw new HTTPError('Bin not found.', 404);
+            throw new HTTPError('Bin not found.', EStatusCode.NOT_FOUND);
         }
 
         const jwt: Payload = req.container.get('jwt');
 
         if (bin.user_id !== jwt!.sub) {
-            throw new HTTPError('You are not the owner of this bin.', 403);
+            throw new HTTPError('You are not the owner of this bin.', EStatusCode.FORBIDDEN);
         }
 
         await BinDTO.delete(bin.id);
@@ -147,6 +147,6 @@ export default class BinByIdHandler extends Handler {
                 return await this.delete(req);
         }
 
-        return Response.status(405);
+        return Response.status(EStatusCode.METHOD_NOT_ALLOWED);
     }
 }

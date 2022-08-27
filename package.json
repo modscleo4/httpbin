@@ -13,6 +13,10 @@
     "cannon": "npx autocannon -c 500 -d 30 --renderStatusCodes --latency localhost:3000/bin",
     "generateKeys": "node ./bin/generateKeys.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modscleo4/httpbin.git"
+  },
   "keywords": [],
   "author": "",
   "license": "Apache-2.0",

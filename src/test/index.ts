@@ -21,9 +21,9 @@ process.env.PORT = '3000';
 
 await import('../server.js');
 
-describe('OAuth2', () => {
+describe('Oauth2', () => {
     it('should return 401 if no Authorization header is provided', async () => {
-        const res = await fetch('http://localhost:3000/api/v1/users', {
+        const res = await fetch('http://localhost:3000/auth/user', {
             method: 'GET',
         });
 

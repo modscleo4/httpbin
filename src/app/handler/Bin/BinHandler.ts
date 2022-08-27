@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Handler, Request, Response } from "apiframework/http";
+import { EStatusCode, Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
 import { generateUUID } from "apiframework/util/uuid.js";
 import { Payload } from "apiframework/util/jwt.js";
@@ -32,7 +32,7 @@ export default class BinHandler extends Handler {
 
     async post(req: Request): Promise<Response> {
         if (!req.parsedBody) {
-            throw new HTTPError("Invalid body.", 400);
+            throw new HTTPError("Invalid body.", EStatusCode.BAD_REQUEST);
         }
 
         const id = generateUUID();
@@ -49,10 +49,10 @@ export default class BinHandler extends Handler {
 
         const saved = await BinDTO.create(data);
         if (!saved) {
-            throw new HTTPError("Failed to save bin.", 500);
+            throw new HTTPError("Failed to save bin.", EStatusCode.INTERNAL_SERVER_ERROR);
         }
 
-        return Response.json(saved).withStatus(201);
+        return Response.json(saved).withStatus(EStatusCode.CREATED);
     }
 
     async handle(req: Request): Promise<Response> {
@@ -64,6 +64,6 @@ export default class BinHandler extends Handler {
                 return await this.post(req);
         }
 
-        return Response.status(405);
+        return Response.status(EStatusCode.METHOD_NOT_ALLOWED);
     }
 }

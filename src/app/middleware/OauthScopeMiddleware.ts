@@ -15,7 +15,7 @@
  */
 
 import { HTTPError } from "apiframework/errors";
-import { Middleware, Request, Response } from "apiframework/http";
+import { EStatusCode, Middleware, Request, Response } from "apiframework/http";
 import { Constructor } from "apiframework/util/types.js";
 
 export default function OauthScopeMiddleware(options: { scopes: string[]; }): Constructor<Middleware> {
@@ -25,7 +25,7 @@ export default function OauthScopeMiddleware(options: { scopes: string[]; }): Co
                 const userScopes = req.container.get('jwt').scopes ?? [];
                 for (const scope of options.scopes) {
                     if (!userScopes.includes(scope)) {
-                        throw new HTTPError(`Insufficient permissions: ${scope}`, 403);
+                        throw new HTTPError(`Insufficient permissions: ${scope}`, EStatusCode.FORBIDDEN);
                     }
                 }
             }
