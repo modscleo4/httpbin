@@ -19,6 +19,7 @@ import {
     CORSMiddleware,
     DispatchMiddleware,
     ErrorMiddleware,
+    ErrorLoggerMiddleware,
     HTTPErrorMiddleware,
     ImplicitHeadMiddleware,
     ImplicitOptionsMiddleware,
@@ -33,16 +34,25 @@ import {
 
 export default function pipeline(server: Server): void {
     /**
-     * Handle any uncaught Error during the request processing
-     *
-     * This middleware should be the first middleware in the pipeline
-     */
-    server.pipe(ErrorMiddleware({ exposeErrors: !!process.env.EXPOSE_ERRORS, logUnhandledErrors: false }));
-
-    /**
      * Log every request using the Logger Service Provider
+     *
+     * Put this middleware before the ErrorMiddleware to log every request, even 500
      */
     server.pipe(RequestLoggerMiddleware);
+
+    /**
+     * Handle any uncaught Error during the request processing
+     *
+     * This middleware should be one of the first middlewares in the pipeline
+     */
+    server.pipe(ErrorMiddleware({ exposeErrors: !!process.env.EXPOSE_ERRORS }));
+
+    /**
+     * Log every error using the Logger Service Provider
+     *
+     * This middleware throws every error it receives, so it should be after ErrorMiddleware in the pipeline
+     */
+    server.pipe(ErrorLoggerMiddleware);
 
     /**
      * Handle any uncaught HTTPError, and return a JSON response

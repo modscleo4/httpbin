@@ -17,13 +17,22 @@
 import { EStatusCode, Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
 import { generateUUID } from "apiframework/util/uuid.js";
-import { Payload } from "apiframework/util/jwt.js";
 
 import { Prisma } from "@prisma/client";
 
 import BinDTO from "@core/dto/BinDTO.js";
+import { Auth } from "apiframework/auth";
+import { Server } from "apiframework/app";
 
 export default class BinHandler extends Handler {
+    #auth: Auth;
+
+    constructor(server: Server) {
+        super(server);
+
+        this.#auth = server.providers.get('Auth');
+    }
+
     async get(req: Request): Promise<Response> {
         const data = await BinDTO.all();
 
@@ -37,12 +46,13 @@ export default class BinHandler extends Handler {
 
         const id = generateUUID();
 
-        const jwt: Payload = req.container.get('jwt');
+        // Since the AuthBearer middleware is used, the user is already authenticated
+        const user = this.#auth.user(req)!;
 
         const data: Prisma.BinCreateInput = {
             id,
             user: {
-                connect: { id: jwt!.sub },
+                connect: { id: user.id },
             },
             content: req.parsedBody
         };

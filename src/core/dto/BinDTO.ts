@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Prisma } from '@prisma/client';
+import { Prisma } from "@prisma/client";
 
-import { prisma } from '@core/lib/Prisma.js';
-import { Bin } from '@core/entity/Bin.js';
+import { prisma } from "@core/lib/Prisma.js";
+import { Bin } from "@core/entity/Bin.js";
 
 export default class BinDTO {
     static async all(args?: Prisma.BinFindManyArgs): Promise<Bin[]> {

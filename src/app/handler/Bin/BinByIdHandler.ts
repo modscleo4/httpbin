@@ -16,11 +16,20 @@
 
 import { EStatusCode, Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
-import { Payload } from "apiframework/util/jwt.js";
 
 import BinDTO from "@core/dto/BinDTO.js";
+import { Auth } from "apiframework/auth";
+import { Server } from "apiframework/app";
 
 export default class BinByIdHandler extends Handler {
+    #auth: Auth;
+
+    constructor(server: Server) {
+        super(server);
+
+        this.#auth = server.providers.get('Auth');
+    }
+
     async get(req: Request): Promise<Response> {
         const id = req.params.get('id');
         if (!id) {
@@ -55,9 +64,10 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError('Bin not found.', EStatusCode.NOT_FOUND);
         }
 
-        const jwt: Payload = req.container.get('jwt');
+        // Since the AuthBearer middleware is used, the user is already authenticated
+        const user = this.#auth.user(req)!;
 
-        if (bin.user_id !== jwt!.sub) {
+        if (bin.user_id !== user.id) {
             throw new HTTPError('You are not the owner of this bin.', EStatusCode.FORBIDDEN);
         }
 
@@ -88,9 +98,10 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError('Bin not found.', EStatusCode.NOT_FOUND);
         }
 
-        const jwt: Payload = req.container.get('jwt');
+        // Since the AuthBearer middleware is used, the user is already authenticated
+        const user = this.#auth.user(req)!;
 
-        if (bin.user_id !== jwt!.sub) {
+        if (bin.user_id !== user.id) {
             throw new HTTPError('You are not the owner of this bin.', EStatusCode.FORBIDDEN);
         }
 
@@ -121,9 +132,10 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError('Bin not found.', EStatusCode.NOT_FOUND);
         }
 
-        const jwt: Payload = req.container.get('jwt');
+        // Since the AuthBearer middleware is used, the user is already authenticated
+        const user = this.#auth.user(req)!;
 
-        if (bin.user_id !== jwt!.sub) {
+        if (bin.user_id !== user.id) {
             throw new HTTPError('You are not the owner of this bin.', EStatusCode.FORBIDDEN);
         }
 

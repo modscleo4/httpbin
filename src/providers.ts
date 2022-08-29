@@ -18,7 +18,7 @@ import { Server } from "apiframework/app";
 import { Auth } from "apiframework/auth";
 import { Scrypt } from "apiframework/hash";
 import { JWT } from "apiframework/jwt";
-import { ConsoleLogger, LogLevel } from 'apiframework/log';
+import { ConsoleLogger, LogLevel } from "apiframework/log";
 
 import PrismaUserProvider from "@app/providers/PrismaUserProvider.js";
 

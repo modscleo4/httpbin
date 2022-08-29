@@ -3,8 +3,8 @@
  * @see https://github.com/TypeStrong/ts-node/discussions/1450#discussioncomment-1806115
  */
 
-import { pathToFileURL } from 'url';
-import { resolve as resolveTs, getFormat, transformSource, load } from 'ts-node/esm';
+import { pathToFileURL } from "url";
+import { resolve as resolveTs, getFormat, transformSource, load } from "ts-node/esm";
 import * as tsConfigPaths from 'tsconfig-paths';
 
 export { getFormat, transformSource, load };
