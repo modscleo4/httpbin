@@ -17,7 +17,7 @@
 import { EStatusCode, Handler, Request, Response } from "apiframework/http";
 import { HTTPError } from "apiframework/errors";
 
-import BinDTO from "@core/dto/BinDTO.js";
+import BinDAO from "@core/dao/BinDAO.js";
 import { Auth } from "apiframework/auth";
 import { Server } from "apiframework/app";
 
@@ -36,7 +36,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
         }
 
-        const bin = await BinDTO.get({
+        const bin = await BinDAO.get({
             where: {
                 id
             }
@@ -54,7 +54,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
         }
 
-        const bin = await BinDTO.get({
+        const bin = await BinDAO.get({
             where: {
                 id
             }
@@ -77,7 +77,7 @@ export default class BinByIdHandler extends Handler {
 
         bin.content = req.parsedBody;
 
-        await BinDTO.save(bin.id, bin);
+        await BinDAO.save(bin.id, bin);
 
         return Response.json(bin);
     }
@@ -88,7 +88,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
         }
 
-        const bin = await BinDTO.get({
+        const bin = await BinDAO.get({
             where: {
                 id
             }
@@ -111,7 +111,7 @@ export default class BinByIdHandler extends Handler {
 
         bin.content = req.parsedBody;
 
-        await BinDTO.save(bin.id, bin);
+        await BinDAO.save(bin.id, bin);
 
         return Response.json(bin);
     }
@@ -122,7 +122,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
         }
 
-        const bin = await BinDTO.get({
+        const bin = await BinDAO.get({
             where: {
                 id
             }
@@ -139,7 +139,7 @@ export default class BinByIdHandler extends Handler {
             throw new HTTPError('You are not the owner of this bin.', EStatusCode.FORBIDDEN);
         }
 
-        await BinDTO.delete(bin.id);
+        await BinDAO.delete(bin.id);
 
         return Response.empty();
     }

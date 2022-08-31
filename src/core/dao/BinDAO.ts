@@ -19,7 +19,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@core/lib/Prisma.js";
 import { Bin } from "@core/entity/Bin.js";
 
-export default class BinDTO {
+export default class BinDAO {
     static async all(args?: Prisma.BinFindManyArgs): Promise<Bin[]> {
         return await prisma.bin.findMany(args);
     }

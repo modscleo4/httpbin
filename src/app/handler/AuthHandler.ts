@@ -20,7 +20,7 @@ import { Hash } from "apiframework/hash";
 import { EStatusCode, Handler, Request, Response } from "apiframework/http";
 import { generateUUID } from "apiframework/util/uuid.js";
 
-import UserDTO from "@core/dto/UserDTO.js";
+import UserDAO from "@core/dao/UserDAO.js";
 import { Auth } from "apiframework/auth";
 
 export default class AuthHandler extends Handler {
@@ -39,7 +39,7 @@ export default class AuthHandler extends Handler {
             throw new HTTPError("Invalid request.", EStatusCode.BAD_REQUEST);
         }
 
-        const user = await UserDTO.get({
+        const user = await UserDAO.get({
             where: {
                 username: req.parsedBody.username
             }
@@ -51,7 +51,7 @@ export default class AuthHandler extends Handler {
 
         const password = this.#hash.hash(req.parsedBody.password);
 
-        await UserDTO.create({
+        await UserDAO.create({
             id: generateUUID(),
             username: req.parsedBody.username,
             password,

@@ -19,7 +19,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@core/lib/Prisma.js";
 import { User } from "@core/entity/User.js";
 
-export default class UserDTO {
+export default class UserDAO {
     static async all(args?: Prisma.UserFindManyArgs): Promise<User[]> {
         return await prisma.user.findMany(args);
     }

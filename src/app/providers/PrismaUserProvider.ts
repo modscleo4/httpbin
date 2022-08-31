@@ -18,7 +18,7 @@ import { User, UserProvider } from "apiframework/auth";
 import { Hash } from "apiframework/hash";
 import { Server } from "apiframework/app";
 
-import UserDTO from "@core/dto/UserDTO.js";
+import UserDAO from "@core/dao/UserDAO.js";
 
 export default class PrismaUserProvider extends UserProvider {
     #hash: Hash;
@@ -30,11 +30,11 @@ export default class PrismaUserProvider extends UserProvider {
     }
 
     async getUserById(id: string): Promise<User | null> {
-        return await UserDTO.get({ select: { id: true, username: true }, where: { id } });
+        return await UserDAO.get({ select: { id: true, username: true }, where: { id } });
     }
 
     async getUserByCredentials(username: string, password: string): Promise<User | null> {
-        const user = await UserDTO.get({ select: { id: true, username: true, password: true }, where: { username } });
+        const user = await UserDAO.get({ select: { id: true, username: true, password: true }, where: { username } });
 
         if (!user) {
             return null;

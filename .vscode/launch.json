@@ -24,6 +24,10 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
+            "preLaunchTask": {
+                "type": "npm",
+                "script": "build"
+            },
             "runtimeExecutable": "npm",
             "runtimeArgs": [
                 "run",

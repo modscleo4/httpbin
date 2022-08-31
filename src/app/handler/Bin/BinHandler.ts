@@ -20,7 +20,7 @@ import { generateUUID } from "apiframework/util/uuid.js";
 
 import { Prisma } from "@prisma/client";
 
-import BinDTO from "@core/dto/BinDTO.js";
+import BinDAO from "@core/dao/BinDAO.js";
 import { Auth } from "apiframework/auth";
 import { Server } from "apiframework/app";
 
@@ -34,7 +34,7 @@ export default class BinHandler extends Handler {
     }
 
     async get(req: Request): Promise<Response> {
-        const data = await BinDTO.all();
+        const data = await BinDAO.all();
 
         return Response.json(data);
     }
@@ -57,7 +57,7 @@ export default class BinHandler extends Handler {
             content: req.parsedBody
         };
 
-        const saved = await BinDTO.create(data);
+        const saved = await BinDAO.create(data);
         if (!saved) {
             throw new HTTPError("Failed to save bin.", EStatusCode.INTERNAL_SERVER_ERROR);
         }

@@ -29,6 +29,7 @@ import {
     PublicPathMiddleware,
     ReadBodyMiddleware,
     RequestLoggerMiddleware,
+    ResponseCompressionMiddleware,
     RouterMiddleware
 } from 'apiframework/middlewares';
 
@@ -53,6 +54,11 @@ export default function pipeline(server: Server): void {
      * This middleware throws every error it receives, so it should be after ErrorMiddleware in the pipeline
      */
     server.pipe(ErrorLoggerMiddleware);
+
+    /**
+     * Compress the response using the Accept-Encoding header
+     */
+    server.pipe(ResponseCompressionMiddleware({ contentTypes: [ '*/*' ] }));
 
     /**
      * Handle any uncaught HTTPError, and return a JSON response
