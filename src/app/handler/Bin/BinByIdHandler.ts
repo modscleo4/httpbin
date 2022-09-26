@@ -21,7 +21,28 @@ import BinDAO from "@core/dao/BinDAO.js";
 import { Auth } from "apiframework/auth";
 import { Server } from "apiframework/app";
 
-export default class BinByIdHandler extends Handler {
+export class Show extends Handler {
+    async handle(req: Request): Promise<Response> {
+        const id = req.params.get('id');
+        if (!id) {
+            throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
+        }
+
+        const bin = await BinDAO.get({
+            where: {
+                id
+            }
+        });
+
+        if (!bin) {
+            throw new HTTPError('Bin not found.', EStatusCode.NOT_FOUND);
+        }
+
+        return Response.json(bin);
+    }
+}
+
+export class Update extends Handler {
     #auth: Auth;
 
     constructor(server: Server) {
@@ -30,25 +51,7 @@ export default class BinByIdHandler extends Handler {
         this.#auth = server.providers.get('Auth');
     }
 
-    async get(req: Request): Promise<Response> {
-        const id = req.params.get('id');
-        if (!id) {
-            throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
-        }
-
-        const bin = await BinDAO.get({
-            where: {
-                id
-            }
-        });
-        if (!bin) {
-            throw new HTTPError('Bin not found.', EStatusCode.NOT_FOUND);
-        }
-
-        return Response.json(bin);
-    }
-
-    async put(req: Request): Promise<Response> {
+    async handle(req: Request): Promise<Response> {
         const id = req.params.get('id');
         if (!id) {
             throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
@@ -81,8 +84,18 @@ export default class BinByIdHandler extends Handler {
 
         return Response.json(bin);
     }
+}
 
-    async patch(req: Request): Promise<Response> {
+export class Patch extends Handler {
+    #auth: Auth;
+
+    constructor(server: Server) {
+        super(server);
+
+        this.#auth = server.providers.get('Auth');
+    }
+
+    async handle(req: Request): Promise<Response> {
         const id = req.params.get('id');
         if (!id) {
             throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
@@ -115,8 +128,18 @@ export default class BinByIdHandler extends Handler {
 
         return Response.json(bin);
     }
+}
 
-    async delete(req: Request): Promise<Response> {
+export class Destroy extends Handler {
+    #auth: Auth;
+
+    constructor(server: Server) {
+        super(server);
+
+        this.#auth = server.providers.get('Auth');
+    }
+
+    async handle(req: Request): Promise<Response> {
         const id = req.params.get('id');
         if (!id) {
             throw new HTTPError("Invalid ID.", EStatusCode.BAD_REQUEST);
@@ -142,23 +165,5 @@ export default class BinByIdHandler extends Handler {
         await BinDAO.delete(bin.id);
 
         return Response.empty();
-    }
-
-    async handle(req: Request): Promise<Response> {
-        switch (req.method) {
-            case 'GET':
-                return await this.get(req);
-
-            case 'PUT':
-                return await this.put(req);
-
-            case 'PATCH':
-                return await this.patch(req);
-
-            case 'DELETE':
-                return await this.delete(req);
-        }
-
-        return Response.status(EStatusCode.METHOD_NOT_ALLOWED);
     }
 }

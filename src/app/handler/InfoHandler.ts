@@ -20,19 +20,26 @@ import { Handler, Request, Response } from "apiframework/http";
 
 export default class InfoHandler extends Handler {
     async handle(req: Request): Promise<Response> {
-        const commit = await new Promise<string>((resolve, reject) => {
-            exec('git rev-parse --short HEAD', (error, stdout, stderr) => {
-                if (error) {
-                    reject(error);
-                }
+        try {
+            const commit = await new Promise<string>((resolve, reject) => {
+                exec('git rev-parse --short HEAD', (error, stdout, stderr) => {
+                    if (error) {
+                        reject(error);
+                    }
 
-                resolve(stdout);
+                    resolve(stdout);
+                });
             });
-        });
 
-        return Response.json({
-            commit: commit.trim(),
-            project: 'httpbin',
-        });
+            return Response.json({
+                commit: commit.trim(),
+                project: 'httpbin',
+            });
+        } catch (e) {
+            return Response.json({
+                commit: 'unknown',
+                project: 'httpbin',
+            });
+        }
     }
 }

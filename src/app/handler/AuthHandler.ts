@@ -23,18 +23,16 @@ import { generateUUID } from "apiframework/util/uuid.js";
 import UserDAO from "@core/dao/UserDAO.js";
 import { Auth } from "apiframework/auth";
 
-export default class AuthHandler extends Handler {
+export class Register extends Handler {
     #hash: Hash;
-    #auth: Auth;
 
     constructor(server: Server) {
         super(server);
 
         this.#hash = server.providers.get('Hash');
-        this.#auth = server.providers.get('Auth');
     }
 
-    async register(req: Request): Promise<Response> {
+    async handle(req: Request): Promise<Response> {
         if (!req.parsedBody.username || !req.parsedBody.password) {
             throw new HTTPError("Invalid request.", EStatusCode.BAD_REQUEST);
         }
@@ -59,21 +57,21 @@ export default class AuthHandler extends Handler {
 
         return Response.status(EStatusCode.CREATED);
     }
+}
 
-    async user(req: Request): Promise<Response> {
-        // Since the AuthBearer middleware is used, the user is already authenticated
-        const user = this.#auth.user(req)!;
+export class User extends Handler {
+    #auth: Auth;
 
-        return Response.json({user, jwt: req.container.get('jwt')});
+    constructor(server: Server) {
+        super(server);
+
+        this.#auth = server.providers.get('Auth');
     }
 
     async handle(req: Request): Promise<Response> {
-        if (req.path === '/auth/register/') {
-            return await this.register(req);
-        } else if (req.path === '/auth/user/') {
-            return await this.user(req);
-        }
+        // Since the AuthBearer middleware is used, the user is already authenticated
+        const user = this.#auth.user(req)!;
 
-        return Response.status(EStatusCode.NOT_FOUND);
+        return Response.json({ user, jwt: req.container.get('jwt') });
     }
 }

@@ -24,7 +24,15 @@ import BinDAO from "@core/dao/BinDAO.js";
 import { Auth } from "apiframework/auth";
 import { Server } from "apiframework/app";
 
-export default class BinHandler extends Handler {
+export class List extends Handler {
+    async handle(req: Request): Promise<Response> {
+        const data = await BinDAO.all();
+
+        return Response.json(data);
+    }
+}
+
+export class Create extends Handler {
     #auth: Auth;
 
     constructor(server: Server) {
@@ -33,13 +41,7 @@ export default class BinHandler extends Handler {
         this.#auth = server.providers.get('Auth');
     }
 
-    async get(req: Request): Promise<Response> {
-        const data = await BinDAO.all();
-
-        return Response.json(data);
-    }
-
-    async post(req: Request): Promise<Response> {
+    async handle(req: Request): Promise<Response> {
         if (!req.parsedBody) {
             throw new HTTPError("Invalid body.", EStatusCode.BAD_REQUEST);
         }
@@ -63,17 +65,5 @@ export default class BinHandler extends Handler {
         }
 
         return Response.json(saved).withStatus(EStatusCode.CREATED);
-    }
-
-    async handle(req: Request): Promise<Response> {
-        switch (req.method) {
-            case 'GET':
-                return await this.get(req);
-
-            case 'POST':
-                return await this.post(req);
-        }
-
-        return Response.status(EStatusCode.METHOD_NOT_ALLOWED);
     }
 }

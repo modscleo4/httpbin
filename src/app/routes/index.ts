@@ -17,9 +17,9 @@
 import { Router as RouterWrapper } from "apiframework/router";
 
 import Oauth2Handler from "@app/handler/Oauth2Handler.js";
-import BinHandler from "@app/handler/Bin/BinHandler.js";
-import BinByIdHandler from "@app/handler/Bin/BinByIdHandler.js";
-import AuthHandler from "@app/handler/AuthHandler.js";
+import * as BinHandler from "@app/handler/Bin/BinHandler.js";
+import * as BinByIdHandler from "@app/handler/Bin/BinByIdHandler.js";
+import * as AuthHandler from "@app/handler/AuthHandler.js";
 import InfoHandler from "@app/handler/InfoHandler.js";
 
 import { AuthBearerMiddleware } from "apiframework/middlewares";
@@ -40,20 +40,20 @@ const Router = new RouterWrapper();
 
 Router.get('/', InfoHandler);
 
-Router.post('/auth/register', AuthHandler).withName('auth.register');
-Router.get('/auth/user', AuthHandler, [AuthBearerMiddleware]).withName('auth.user');
+Router.post('/auth/register', AuthHandler.Register).withName('auth.register');
+Router.get('/auth/user', AuthHandler.User, [AuthBearerMiddleware]).withName('auth.user');
 
 Router.post('/oauth/token', Oauth2Handler).withName('oauth.token');
 
 Router.group('/bin', () => {
-    Router.get('/', BinHandler).withName('bin.list');
-    Router.post('/', BinHandler, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.create');
+    Router.get('/', BinHandler.List).withName('bin.list');
+    Router.post('/', BinHandler.Create, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.create');
 
     Router.group('/{id}', () => {
-        Router.get('/', BinByIdHandler).withName('bin.get');
-        Router.put('/', BinByIdHandler, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.update');
-        Router.patch('/', BinByIdHandler, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.patch');
-        Router.delete('/', BinByIdHandler, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.delete');
+        Router.get('/', BinByIdHandler.Show).withName('bin.show');
+        Router.put('/', BinByIdHandler.Update, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.update');
+        Router.patch('/', BinByIdHandler.Patch, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.patch');
+        Router.delete('/', BinByIdHandler.Destroy, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.destroy');
     });
 });
 

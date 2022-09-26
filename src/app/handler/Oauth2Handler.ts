@@ -50,7 +50,7 @@ export default class Oauth2Handler extends Handler {
         const issuedAt = Date.now();
         const expires = 1000 * 60 * 60 * 1; // 1 hour
 
-        const data: (Payload & { username: string; scopes: string[]; }) = {
+        const data: (Payload & { username: string; scope: string; }) = {
             iss: "http://localhost:3000",
             sub: user.id,
             exp: Math.ceil((issuedAt + expires) / 1000),
@@ -58,7 +58,7 @@ export default class Oauth2Handler extends Handler {
             jti: generateUUID(),
 
             username: user.username,
-            scopes: scope.split(' '),
+            scope,
         };
 
         const jwt = this.#jwt.sign(data);
