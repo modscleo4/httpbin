@@ -17,8 +17,7 @@
 import { Router as RouterWrapper } from "apiframework/router";
 
 import Oauth2Handler from "@app/handler/Oauth2Handler.js";
-import * as BinHandler from "@app/handler/Bin/BinHandler.js";
-import * as BinByIdHandler from "@app/handler/Bin/BinByIdHandler.js";
+import * as BinHandler from "@app/handler/BinHandler.js";
 import * as AuthHandler from "@app/handler/AuthHandler.js";
 import InfoHandler from "@app/handler/InfoHandler.js";
 
@@ -50,10 +49,10 @@ Router.group('/bin', () => {
     Router.post('/', BinHandler.Create, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.create');
 
     Router.group('/{id}', () => {
-        Router.get('/', BinByIdHandler.Show).withName('bin.show');
-        Router.put('/', BinByIdHandler.Update, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.update');
-        Router.patch('/', BinByIdHandler.Patch, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.patch');
-        Router.delete('/', BinByIdHandler.Destroy, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.destroy');
+        Router.get('/', BinHandler.Show).withName('bin.show');
+        Router.put('/', BinHandler.Update, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.update');
+        Router.patch('/', BinHandler.Patch, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.patch');
+        Router.delete('/', BinHandler.Destroy, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.destroy');
     });
 });
 
