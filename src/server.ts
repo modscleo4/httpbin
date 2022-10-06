@@ -16,7 +16,7 @@
 
 import dotenv from 'dotenv';
 
-import { Server } from "apiframework/app";
+import { Server } from "midori/app";
 
 import { prisma } from "@core/lib/Prisma.js";
 

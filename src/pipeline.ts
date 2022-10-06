@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Server } from "apiframework/app";
+import { Server } from "midori/app";
 import {
     CORSMiddleware,
     DispatchMiddleware,
@@ -31,7 +31,7 @@ import {
     RequestLoggerMiddleware,
     ResponseCompressionMiddleware,
     RouterMiddleware
-} from 'apiframework/middlewares';
+} from "midori/middlewares";
 
 export default function pipeline(server: Server): void {
     /**

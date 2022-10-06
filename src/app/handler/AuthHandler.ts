@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { Server } from "apiframework/app";
-import { HTTPError } from "apiframework/errors";
-import { Hash } from "apiframework/hash";
-import { EStatusCode, Handler, Request, Response } from "apiframework/http";
-import { generateUUID } from "apiframework/util/uuid.js";
+import { Server } from "midori/app";
+import { HTTPError } from "midori/errors";
+import { Hash } from "midori/hash";
+import { EStatusCode, Handler, Request, Response } from "midori/http";
+import { generateUUID } from "midori/util/uuid.js";
 
 import UserDAO from "@core/dao/UserDAO.js";
-import { Auth } from "apiframework/auth";
+import { Auth } from "midori/auth";
 
 export class Register extends Handler {
     #hash: Hash;

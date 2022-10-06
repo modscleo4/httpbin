@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { HTTPError } from "apiframework/errors";
-import { EStatusCode, Middleware, Request, Response } from "apiframework/http";
-import { Constructor } from "apiframework/util/types.js";
+import { HTTPError } from "midori/errors";
+import { EStatusCode, Middleware, Request, Response } from "midori/http";
+import { Constructor } from "midori/util/types.js";
 
 export default function OauthScopeMiddleware(options: { scopes: string[]; }): Constructor<Middleware> {
     return class extends Middleware {

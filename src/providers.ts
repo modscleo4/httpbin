@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { Server } from "apiframework/app";
-import { Auth } from "apiframework/auth";
-import { Scrypt } from "apiframework/hash";
-import { JWT } from "apiframework/jwt";
-import { ConsoleLogger, LogLevel } from "apiframework/log";
+import { Server } from "midori/app";
+import { Auth } from "midori/auth";
+import { Scrypt } from "midori/hash";
+import { JWT } from "midori/jwt";
+import { ConsoleLogger, LogLevel } from "midori/log";
 
 import PrismaUserProvider from "@app/providers/PrismaUserProvider.js";
 

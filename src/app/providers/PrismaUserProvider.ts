@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { User, UserProvider } from "apiframework/auth";
-import { Hash } from "apiframework/hash";
-import { Server } from "apiframework/app";
+import { User, UserProvider } from "midori/auth";
+import { Hash } from "midori/hash";
+import { Server } from "midori/app";
 
 import UserDAO from "@core/dao/UserDAO.js";
 

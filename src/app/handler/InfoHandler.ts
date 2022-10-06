@@ -16,7 +16,7 @@
 
 import { exec } from "child_process";
 
-import { Handler, Request, Response } from "apiframework/http";
+import { Handler, Request, Response } from "midori/http";
 
 export default class InfoHandler extends Handler {
     async handle(req: Request): Promise<Response> {

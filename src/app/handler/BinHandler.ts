@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { EStatusCode, Handler, Request, Response } from "apiframework/http";
-import { HTTPError } from "apiframework/errors";
-import { generateUUID } from "apiframework/util/uuid.js";
+import { EStatusCode, Handler, Request, Response } from "midori/http";
+import { HTTPError } from "midori/errors";
+import { generateUUID } from "midori/util/uuid.js";
 
 import { Prisma } from "@prisma/client";
 
 import BinDAO from "@core/dao/BinDAO.js";
-import { Auth } from "apiframework/auth";
-import { Server } from "apiframework/app";
+import { Auth } from "midori/auth";
+import { Server } from "midori/app";
 
 export class List extends Handler {
     async handle(req: Request): Promise<Response> {

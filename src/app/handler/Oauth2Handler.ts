@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { EStatusCode, Handler, Request, Response } from "apiframework/http";
-import { HTTPError } from "apiframework/errors";
-import { Payload } from "apiframework/util/jwt.js";
-import { generateUUID } from "apiframework/util/uuid.js";
-import { Server } from "apiframework/app";
-import { JWT } from "apiframework/jwt";
+import { EStatusCode, Handler, Request, Response } from "midori/http";
+import { HTTPError } from "midori/errors";
+import { Payload } from "midori/util/jwt.js";
+import { generateUUID } from "midori/util/uuid.js";
+import { Server } from "midori/app";
+import { JWT } from "midori/jwt";
 
-import { Auth } from "apiframework/auth";
+import { Auth } from "midori/auth";
 
 export default class Oauth2Handler extends Handler {
     #jwt: JWT;
