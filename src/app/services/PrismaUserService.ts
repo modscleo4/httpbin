@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-import { User, UserProvider } from "midori/auth";
+import { User, UserService } from "midori/auth";
 import { Hash } from "midori/hash";
-import { Server } from "midori/app";
 
 import UserDAO from "@core/dao/UserDAO.js";
 
-export default class PrismaUserProvider extends UserProvider {
+export default class PrismaUserService extends UserService {
     #hash: Hash;
 
-    constructor(server: Server) {
+    constructor(hash: Hash) {
         super();
 
-        this.#hash = server.providers.get('Hash');
+        this.#hash = hash;
     }
 
     async getUserById(id: string): Promise<User | null> {

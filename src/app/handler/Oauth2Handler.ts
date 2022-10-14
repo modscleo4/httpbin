@@ -22,6 +22,7 @@ import { Server } from "midori/app";
 import { JWT } from "midori/jwt";
 
 import { Auth } from "midori/auth";
+import { AuthServiceProvider, JWTServiceProvider } from "midori/providers";
 
 export default class Oauth2Handler extends Handler {
     #jwt: JWT;
@@ -30,8 +31,8 @@ export default class Oauth2Handler extends Handler {
     constructor(server: Server) {
         super(server);
 
-        this.#jwt = server.providers.get('JWT');
-        this.#auth = server.providers.get('Auth');
+        this.#jwt = server.services.get(JWTServiceProvider);
+        this.#auth = server.services.get(AuthServiceProvider);
     }
 
     async handlePasswordGrant(req: Request): Promise<Response> {

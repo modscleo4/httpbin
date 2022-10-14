@@ -23,6 +23,7 @@ import { Prisma } from "@prisma/client";
 import BinDAO from "@core/dao/BinDAO.js";
 import { Auth } from "midori/auth";
 import { Server } from "midori/app";
+import { AuthServiceProvider } from "midori/providers";
 
 export class List extends Handler {
     async handle(req: Request): Promise<Response> {
@@ -38,7 +39,7 @@ export class Create extends Handler {
     constructor(server: Server) {
         super(server);
 
-        this.#auth = server.providers.get('Auth');
+        this.#auth = server.services.get(AuthServiceProvider);
     }
 
     async handle(req: Request): Promise<Response> {
@@ -95,7 +96,7 @@ export class Update extends Handler {
     constructor(server: Server) {
         super(server);
 
-        this.#auth = server.providers.get('Auth');
+        this.#auth = server.services.get(AuthServiceProvider);
     }
 
     async handle(req: Request): Promise<Response> {
@@ -117,7 +118,7 @@ export class Update extends Handler {
         // Since the AuthBearer middleware is used, the user is already authenticated
         const user = this.#auth.user(req)!;
 
-        if (bin.user_id !== user.id) {
+        if (bin.userId !== user.id) {
             throw new HTTPError('You are not the owner of this bin.', EStatusCode.FORBIDDEN);
         }
 
@@ -139,7 +140,7 @@ export class Patch extends Handler {
     constructor(server: Server) {
         super(server);
 
-        this.#auth = server.providers.get('Auth');
+        this.#auth = server.services.get(AuthServiceProvider);
     }
 
     async handle(req: Request): Promise<Response> {
@@ -161,7 +162,7 @@ export class Patch extends Handler {
         // Since the AuthBearer middleware is used, the user is already authenticated
         const user = this.#auth.user(req)!;
 
-        if (bin.user_id !== user.id) {
+        if (bin.userId !== user.id) {
             throw new HTTPError('You are not the owner of this bin.', EStatusCode.FORBIDDEN);
         }
 
@@ -183,7 +184,7 @@ export class Destroy extends Handler {
     constructor(server: Server) {
         super(server);
 
-        this.#auth = server.providers.get('Auth');
+        this.#auth = server.services.get(AuthServiceProvider);
     }
 
     async handle(req: Request): Promise<Response> {
@@ -205,7 +206,7 @@ export class Destroy extends Handler {
         // Since the AuthBearer middleware is used, the user is already authenticated
         const user = this.#auth.user(req)!;
 
-        if (bin.user_id !== user.id) {
+        if (bin.userId !== user.id) {
             throw new HTTPError('You are not the owner of this bin.', EStatusCode.FORBIDDEN);
         }
 

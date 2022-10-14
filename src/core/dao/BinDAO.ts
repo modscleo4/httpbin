@@ -34,13 +34,13 @@ export default class BinDAO {
         return await prisma.bin.findFirst(args);
     }
 
-    static async save(id: string, { user_id, content }: { user_id: string, content: any; }): Promise<Bin> {
+    static async save(id: string, { userId, content }: { userId: string, content: any; }): Promise<Bin> {
         return await prisma.bin.update({
             where: {
                 id
             },
             data: {
-                user_id,
+                userId,
                 content
             }
         });

@@ -15,23 +15,30 @@
  */
 
 import { Server } from "midori/app";
-import { Auth } from "midori/auth";
 import { Scrypt } from "midori/hash";
 import { JWT } from "midori/jwt";
 import { ConsoleLogger, LogLevel } from "midori/log";
+import {
+    AuthServiceProvider,
+    HashServiceProvider,
+    HashServiceProviderFactory,
+    JWTServiceProviderFactory,
+    LoggerServiceProviderFactory,
+    RouterServiceProviderFactory,
+    UserServiceProviderFactory
+} from "midori/providers";
 
-import PrismaUserProvider from "@app/providers/PrismaUserProvider.js";
-
+import PrismaUserService from "@app/services/PrismaUserService.js";
 import router from '@app/routes/index.js';
 
 export default function providers(server: Server): void {
-    server.install('Router', router);
-    server.install('Logger', new ConsoleLogger({ colorsEnabled: true, minLevel: LogLevel.DEBUG }));
+    server.install(RouterServiceProviderFactory(router));
+    server.install(LoggerServiceProviderFactory(new ConsoleLogger({ colorsEnabled: true, minLevel: LogLevel.DEBUG })));
 
     // Add providers here
-    // Recover the provider with server.providers.get('ProviderName') in your handlers and middleware constructors
-    server.install('JWT', new JWT(process.env.JWT_ALGORITHM || 'HS256', process.env.JWT_SECRET || 'secret', process.env.JWT_PUBLIC_KEY, process.env.JWT_PRIVATE_KEY));
-    server.install('Hash', new Scrypt());
-    server.install('User', new PrismaUserProvider(server));
-    server.install('Auth', new Auth(server));
+    // Recover the provider with server.services.get(ServiceProvider) in your handlers and middleware constructors
+    server.install(JWTServiceProviderFactory(new JWT(process.env.JWT_ALGORITHM || 'HS256', process.env.JWT_SECRET || 'secret', process.env.JWT_PUBLIC_KEY, process.env.JWT_PRIVATE_KEY)));
+    server.install(HashServiceProviderFactory(new Scrypt()));
+    server.install(UserServiceProviderFactory(new PrismaUserService(server.services.get(HashServiceProvider))));
+    server.install(AuthServiceProvider);
 }

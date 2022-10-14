@@ -21,7 +21,7 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@types/node": "^18.8.3",
+    "@types/node": "^18.8.5",
     "autocannon": "^7.10.0",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",

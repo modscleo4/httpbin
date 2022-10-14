@@ -22,6 +22,7 @@ import { generateUUID } from "midori/util/uuid.js";
 
 import UserDAO from "@core/dao/UserDAO.js";
 import { Auth } from "midori/auth";
+import { AuthServiceProvider, HashServiceProvider } from "midori/providers";
 
 export class Register extends Handler {
     #hash: Hash;
@@ -29,7 +30,7 @@ export class Register extends Handler {
     constructor(server: Server) {
         super(server);
 
-        this.#hash = server.providers.get('Hash');
+        this.#hash = server.services.get(HashServiceProvider);
     }
 
     async handle(req: Request): Promise<Response> {
@@ -65,7 +66,7 @@ export class User extends Handler {
     constructor(server: Server) {
         super(server);
 
-        this.#auth = server.providers.get('Auth');
+        this.#auth = server.services.get(AuthServiceProvider);
     }
 
     async handle(req: Request): Promise<Response> {

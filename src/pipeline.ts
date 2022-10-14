@@ -16,9 +16,9 @@
 
 import { Server } from "midori/app";
 import {
-    CORSMiddleware,
+    CORSMiddlewareFactory,
     DispatchMiddleware,
-    ErrorMiddleware,
+    ErrorMiddlewareFactory,
     ErrorLoggerMiddleware,
     HTTPErrorMiddleware,
     ImplicitHeadMiddleware,
@@ -26,10 +26,10 @@ import {
     MethodNotAllowedMiddleware,
     NotFoundMiddleware,
     ParseBodyMiddleware,
-    PublicPathMiddleware,
+    PublicPathMiddlewareFactory,
     ReadBodyMiddleware,
     RequestLoggerMiddleware,
-    ResponseCompressionMiddleware,
+    ResponseCompressionMiddlewareFactory,
     RouterMiddleware
 } from "midori/middlewares";
 
@@ -46,7 +46,7 @@ export default function pipeline(server: Server): void {
      *
      * This middleware should be one of the first middlewares in the pipeline
      */
-    server.pipe(ErrorMiddleware({ exposeErrors: !!process.env.EXPOSE_ERRORS }));
+    server.pipe(ErrorMiddlewareFactory({ exposeErrors: !!process.env.EXPOSE_ERRORS }));
 
     /**
      * Log every error using the Logger Service Provider
@@ -58,7 +58,7 @@ export default function pipeline(server: Server): void {
     /**
      * Compress the response using the Accept-Encoding header
      */
-    server.pipe(ResponseCompressionMiddleware({ contentTypes: [ '*/*' ] }));
+    server.pipe(ResponseCompressionMiddlewareFactory({ contentTypes: [ '*/*' ] }));
 
     /**
      * Handle any uncaught HTTPError, and return a JSON response
@@ -94,7 +94,7 @@ export default function pipeline(server: Server): void {
 
     // Add here any middlewares that should be executed before the route handler
     //
-    server.pipe(CORSMiddleware({ origin: '*' }));
+    server.pipe(CORSMiddlewareFactory({ origin: '*', openerPolicy: 'same-origin', embedderPolicy: 'require-corp' }));
 
     /**
      * Dispatch the Middleware Chain the Router Middleware found
@@ -110,6 +110,6 @@ export default function pipeline(server: Server): void {
      * When no route matches the request, PublicPathMiddleware will try to find a matching file in the public directory.
      * The public directory is relative to the project root.
      */
-    server.pipe(PublicPathMiddleware({ path: './public' }));
+    server.pipe(PublicPathMiddlewareFactory({ path: './public' }));
     server.pipe(NotFoundMiddleware);
 }

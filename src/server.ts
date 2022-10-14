@@ -20,8 +20,8 @@ import { Server } from "midori/app";
 
 import { prisma } from "@core/lib/Prisma.js";
 
-import pipeline from './pipeline.js';
-import providers from './providers.js';
+import pipeline from "./pipeline.js";
+import providers from "./providers.js";
 
 dotenv.config({ override: true });
 dotenv.config({ path: './.env.dev', override: true });

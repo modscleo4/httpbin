@@ -22,9 +22,9 @@ import * as AuthHandler from "@app/handler/AuthHandler.js";
 import InfoHandler from "@app/handler/InfoHandler.js";
 
 import { AuthBearerMiddleware } from "midori/middlewares";
-import OauthScopeMiddleware from "@app/middleware/OauthScopeMiddleware.js";
+import OauthScopeMiddlewareFactory from "@app/middleware/OauthScopeMiddleware.js";
 
-const OauthScopeMiddlewareBin = OauthScopeMiddleware({ scopes: ['bin'] });
+const OauthScopeMiddlewareBin = OauthScopeMiddlewareFactory({ scopes: ['bin'] });
 
 const Router = new RouterWrapper();
 
