@@ -14,34 +14,30 @@
  * limitations under the License.
  */
 
-import { Prisma } from "@prisma/client";
-
-import { prisma } from "@core/lib/Prisma.js";
+import { PrismaDTO, prisma } from "@core/lib/Prisma.js";
 import { User } from "@core/entity/User.js";
 
 export default class UserDAO {
-    static async all(args?: Prisma.UserFindManyArgs): Promise<User[]> {
+    static async all(args?: PrismaDTO.UserFindManyArgs): Promise<User[]> {
         return await prisma.user.findMany(args);
     }
 
-    static async create(data: Prisma.UserCreateInput): Promise<User> {
+    static async create(data: PrismaDTO.UserCreateInput): Promise<User> {
         return await prisma.user.create({
             data
         });
     }
 
-    static async get(args: Prisma.UserFindFirstArgs): Promise<User | null> {
+    static async get(args: PrismaDTO.UserFindFirstArgs): Promise<User | null> {
         return await prisma.user.findFirst(args);
     }
 
-    static async save(id: string, { username }: { username: string; }): Promise<User> {
+    static async save(id: string, data: PrismaDTO.UserUpdateInput): Promise<User> {
         return await prisma.user.update({
             where: {
                 id
             },
-            data: {
-                username,
-            }
+            data
         });
     }
 

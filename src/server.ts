@@ -20,14 +20,19 @@ import { Server } from "midori/app";
 
 import { prisma } from "@core/lib/Prisma.js";
 
+import config from './config.js';
 import pipeline from "./pipeline.js";
 import providers from "./providers.js";
 
-dotenv.config({ override: true });
-dotenv.config({ path: './.env.dev', override: true });
+dotenv.config({ });
 
-export const server = new Server();
+export const server = new Server({ production: process.env.NODE_ENV?.toUpperCase() === 'PRODUCTION' });
 
+if (!server.production) {
+    dotenv.config({ path: './.env.dev' });
+}
+
+config(server);
 providers(server);
 pipeline(server);
 

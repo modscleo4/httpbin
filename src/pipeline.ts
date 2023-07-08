@@ -16,9 +16,9 @@
 
 import { Server } from "midori/app";
 import {
-    CORSMiddlewareFactory,
+    CORSMiddleware,
     DispatchMiddleware,
-    ErrorMiddlewareFactory,
+    ErrorMiddleware,
     ErrorLoggerMiddleware,
     HTTPErrorMiddleware,
     ImplicitHeadMiddleware,
@@ -27,9 +27,8 @@ import {
     NotFoundMiddleware,
     ParseBodyMiddleware,
     PublicPathMiddlewareFactory,
-    ReadBodyMiddleware,
     RequestLoggerMiddleware,
-    ResponseCompressionMiddlewareFactory,
+    ResponseCompressionMiddleware,
     RouterMiddleware
 } from "midori/middlewares";
 
@@ -46,7 +45,7 @@ export default function pipeline(server: Server): void {
      *
      * This middleware should be one of the first middlewares in the pipeline
      */
-    server.pipe(ErrorMiddlewareFactory({ exposeErrors: !!process.env.EXPOSE_ERRORS }));
+    server.pipe(ErrorMiddleware);
 
     /**
      * Log every error using the Logger Service Provider
@@ -56,17 +55,13 @@ export default function pipeline(server: Server): void {
     server.pipe(ErrorLoggerMiddleware);
 
     /**
-     * Compress the response using the Accept-Encoding header
-     */
-    server.pipe(ResponseCompressionMiddlewareFactory({ contentTypes: [ '*/*' ] }));
-
-    /**
      * Handle any uncaught HTTPError, and return a JSON response
      */
     server.pipe(HTTPErrorMiddleware);
 
     // Add your own pre-processing middlewares here
-    //
+    server.pipe(ResponseCompressionMiddleware);
+    server.pipe(CORSMiddleware);
 
     /**
      * Register the router middleware, which will handle all incoming requests
@@ -89,12 +84,10 @@ export default function pipeline(server: Server): void {
     /**
      * Read the request body, then parse it based on the Content-Type header
      */
-    server.pipe(ReadBodyMiddleware);
     server.pipe(ParseBodyMiddleware);
 
     // Add here any middlewares that should be executed before the route handler
     //
-    server.pipe(CORSMiddlewareFactory({ origin: '*', openerPolicy: 'same-origin', embedderPolicy: 'require-corp' }));
 
     /**
      * Dispatch the Middleware Chain the Router Middleware found
@@ -110,6 +103,6 @@ export default function pipeline(server: Server): void {
      * When no route matches the request, PublicPathMiddleware will try to find a matching file in the public directory.
      * The public directory is relative to the project root.
      */
-    server.pipe(PublicPathMiddlewareFactory({ path: './public' }));
+    !server.production && server.pipe(PublicPathMiddlewareFactory({ path: './public' }));
     server.pipe(NotFoundMiddleware);
 }

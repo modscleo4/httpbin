@@ -19,20 +19,24 @@ import { exec } from "child_process";
 import { Handler, Request, Response } from "midori/http";
 
 export default class InfoHandler extends Handler {
+    #commit: string = '';
+
     async handle(req: Request): Promise<Response> {
         try {
-            const commit = await new Promise<string>((resolve, reject) => {
-                exec('git rev-parse --short HEAD', (error, stdout, stderr) => {
-                    if (error) {
-                        reject(error);
-                    }
+            if (!this.#commit) {
+                this.#commit = await new Promise<string>((resolve, reject) => {
+                    exec('git rev-parse --short HEAD', (error, stdout, stderr) => {
+                        if (error) {
+                            reject(error);
+                        }
 
-                    resolve(stdout);
+                        resolve(stdout);
+                    });
                 });
-            });
+            }
 
             return Response.json({
-                commit: commit.trim(),
+                commit: this.#commit.trim(),
                 project: 'httpbin',
             });
         } catch (e) {

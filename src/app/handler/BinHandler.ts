@@ -17,13 +17,12 @@
 import { EStatusCode, Handler, Request, Response } from "midori/http";
 import { HTTPError } from "midori/errors";
 import { generateUUID } from "midori/util/uuid.js";
+import { Auth } from "midori/auth";
+import { Application } from "midori/app";
+import { AuthServiceProvider } from "midori/providers";
 
 import { Prisma } from "@prisma/client";
-
 import BinDAO from "@core/dao/BinDAO.js";
-import { Auth } from "midori/auth";
-import { Server } from "midori/app";
-import { AuthServiceProvider } from "midori/providers";
 
 export class List extends Handler {
     async handle(req: Request): Promise<Response> {
@@ -36,10 +35,10 @@ export class List extends Handler {
 export class Create extends Handler {
     #auth: Auth;
 
-    constructor(server: Server) {
-        super(server);
+    constructor(app: Application) {
+        super(app);
 
-        this.#auth = server.services.get(AuthServiceProvider);
+        this.#auth = app.services.get(AuthServiceProvider);
     }
 
     async handle(req: Request): Promise<Response> {
@@ -93,10 +92,10 @@ export class Show extends Handler {
 export class Update extends Handler {
     #auth: Auth;
 
-    constructor(server: Server) {
-        super(server);
+    constructor(app: Application) {
+        super(app);
 
-        this.#auth = server.services.get(AuthServiceProvider);
+        this.#auth = app.services.get(AuthServiceProvider);
     }
 
     async handle(req: Request): Promise<Response> {
@@ -128,7 +127,7 @@ export class Update extends Handler {
 
         bin.content = req.parsedBody;
 
-        await BinDAO.save(bin.id, bin);
+        await BinDAO.save(bin.id, { content: bin.content! });
 
         return Response.json(bin);
     }
@@ -137,10 +136,10 @@ export class Update extends Handler {
 export class Patch extends Handler {
     #auth: Auth;
 
-    constructor(server: Server) {
-        super(server);
+    constructor(app: Application) {
+        super(app);
 
-        this.#auth = server.services.get(AuthServiceProvider);
+        this.#auth = app.services.get(AuthServiceProvider);
     }
 
     async handle(req: Request): Promise<Response> {
@@ -172,7 +171,7 @@ export class Patch extends Handler {
 
         bin.content = req.parsedBody;
 
-        await BinDAO.save(bin.id, bin);
+        await BinDAO.save(bin.id, { content: bin.content! });
 
         return Response.json(bin);
     }
@@ -181,10 +180,10 @@ export class Patch extends Handler {
 export class Destroy extends Handler {
     #auth: Auth;
 
-    constructor(server: Server) {
-        super(server);
+    constructor(app: Application) {
+        super(app);
 
-        this.#auth = server.services.get(AuthServiceProvider);
+        this.#auth = app.services.get(AuthServiceProvider);
     }
 
     async handle(req: Request): Promise<Response> {

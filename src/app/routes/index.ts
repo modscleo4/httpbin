@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-import { Router as RouterWrapper } from "midori/router";
+import { Router as RouterBuilder } from "midori/router";
+import { Response } from "midori/http";
 
 import Oauth2Handler from "@app/handler/Oauth2Handler.js";
 import * as BinHandler from "@app/handler/BinHandler.js";
 import * as AuthHandler from "@app/handler/AuthHandler.js";
 import InfoHandler from "@app/handler/InfoHandler.js";
 
-import { AuthBearerMiddleware } from "midori/middlewares";
+import AuthBearerMiddleware from "@app/middleware/AuthBearerMiddleware.js";
 import OauthScopeMiddlewareFactory from "@app/middleware/OauthScopeMiddleware.js";
 
 const OauthScopeMiddlewareBin = OauthScopeMiddlewareFactory({ scopes: ['bin'] });
 
-const Router = new RouterWrapper();
+const Router = new RouterBuilder();
 
 /**
  * Routing
@@ -34,8 +35,11 @@ const Router = new RouterWrapper();
  * Define your routes here
  * Use the Router.get(), Router.post(), Router.put(), Router.patch(), Router.delete() methods to define your routes
  * Use the Router.group() method to group routes under a common prefix
- * Use the Router.usePublicPath() method to define a public path to serve static files from
+ * Use the Router.route() method to define a route using a custom HTTP method
  */
+
+Router.get('/docs', async (req, app) => Response.file('src/swagger-ui/index.html'));
+Router.get('/openapi.yml', async (req, app) => Response.file('./openapi.yml'));
 
 Router.get('/', InfoHandler);
 

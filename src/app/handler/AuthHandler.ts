@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-import { Server } from "midori/app";
+import { Application } from "midori/app";
+import { Auth } from "midori/auth";
 import { HTTPError } from "midori/errors";
 import { Hash } from "midori/hash";
 import { EStatusCode, Handler, Request, Response } from "midori/http";
+import { AuthServiceProvider, HashServiceProvider } from "midori/providers";
 import { generateUUID } from "midori/util/uuid.js";
 
 import UserDAO from "@core/dao/UserDAO.js";
-import { Auth } from "midori/auth";
-import { AuthServiceProvider, HashServiceProvider } from "midori/providers";
 
 export class Register extends Handler {
     #hash: Hash;
 
-    constructor(server: Server) {
-        super(server);
+    constructor(app: Application) {
+        super(app);
 
-        this.#hash = server.services.get(HashServiceProvider);
+        this.#hash = app.services.get(HashServiceProvider);
     }
 
-    async handle(req: Request): Promise<Response> {
-        if (!req.parsedBody.username || !req.parsedBody.password) {
+    async handle(req: Request<{ username: string, password: string; }>): Promise<Response> {
+        if (!req.parsedBody?.username || !req.parsedBody?.password) {
             throw new HTTPError("Invalid request.", EStatusCode.BAD_REQUEST);
         }
 
@@ -63,10 +63,10 @@ export class Register extends Handler {
 export class User extends Handler {
     #auth: Auth;
 
-    constructor(server: Server) {
-        super(server);
+    constructor(app: Application) {
+        super(app);
 
-        this.#auth = server.services.get(AuthServiceProvider);
+        this.#auth = app.services.get(AuthServiceProvider);
     }
 
     async handle(req: Request): Promise<Response> {

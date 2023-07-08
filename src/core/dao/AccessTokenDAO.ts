@@ -15,26 +15,26 @@
  */
 
 import { PrismaDTO, prisma } from "@core/lib/Prisma.js";
-import { Bin } from "@core/entity/Bin.js";
+import { AccessToken } from "@core/entity/AccessToken.js";
 import { Prisma } from "@prisma/client";
 
-export default class BinDAO {
-    static async all(args?: PrismaDTO.BinFindManyArgs): Promise<Bin[]> {
-        return await prisma.bin.findMany(args);
+export default class AccessTokenDAO {
+    static async all(args?: PrismaDTO.AccessTokenFindManyArgs): Promise<AccessToken[]> {
+        return await prisma.accessToken.findMany(args);
     }
 
-    static async create(data: PrismaDTO.BinCreateInput): Promise<Bin> {
-        return await prisma.bin.create({
+    static async create(data: PrismaDTO.AccessTokenCreateInput): Promise<AccessToken> {
+        return await prisma.accessToken.create({
             data
         });
     }
 
-    static async get(args: PrismaDTO.BinFindFirstArgs): Promise<Bin | null> {
-        return await prisma.bin.findFirst(args);
+    static async get(args: PrismaDTO.AccessTokenFindFirstArgs): Promise<AccessToken | null> {
+        return await prisma.accessToken.findFirst(args);
     }
 
-    static async save(id: string, data: PrismaDTO.BinUpdateInput): Promise<Bin> {
-        return await prisma.bin.update({
+    static async save(id: string, data: PrismaDTO.AccessTokenUpdateInput): Promise<AccessToken> {
+        return await prisma.accessToken.update({
             where: {
                 id
             },
@@ -42,8 +42,8 @@ export default class BinDAO {
         });
     }
 
-    static async delete(id: string): Promise<Bin> {
-        return await prisma.bin.delete({
+    static async delete(id: string): Promise<AccessToken> {
+        return await prisma.accessToken.delete({
             where: {
                 id
             }

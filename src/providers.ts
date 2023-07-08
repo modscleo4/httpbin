@@ -16,13 +16,12 @@
 
 import { Server } from "midori/app";
 import { Scrypt } from "midori/hash";
-import { JWT } from "midori/jwt";
 import { ConsoleLogger, LogLevel } from "midori/log";
 import {
     AuthServiceProvider,
     HashServiceProvider,
     HashServiceProviderFactory,
-    JWTServiceProviderFactory,
+    JWTServiceProvider,
     LoggerServiceProviderFactory,
     RouterServiceProviderFactory,
     UserServiceProviderFactory
@@ -36,8 +35,8 @@ export default function providers(server: Server): void {
     server.install(LoggerServiceProviderFactory(new ConsoleLogger({ colorsEnabled: true, minLevel: LogLevel.DEBUG })));
 
     // Add providers here
-    // Recover the provider with server.services.get(ServiceProvider) in your handlers and middleware constructors
-    server.install(JWTServiceProviderFactory(new JWT(process.env.JWT_ALGORITHM || 'HS256', process.env.JWT_SECRET || 'secret', process.env.JWT_PUBLIC_KEY, process.env.JWT_PRIVATE_KEY)));
+    // Recover the provider with app.services.get(ServiceProvider) in your handlers and middleware constructors
+    server.install(JWTServiceProvider);
     server.install(HashServiceProviderFactory(new Scrypt()));
     server.install(UserServiceProviderFactory(new PrismaUserService(server.services.get(HashServiceProvider))));
     server.install(AuthServiceProvider);
