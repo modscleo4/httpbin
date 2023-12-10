@@ -32,6 +32,14 @@ import {
     RouterMiddleware
 } from "midori/middlewares";
 
+/**
+ * Pipelining
+ *
+ * Define your pipeline here.
+ * Use the server.pipe() method to add middlewares to the pipeline.
+ * The order here matters, as the middlewares are chained in the same order they are added.
+ */
+
 export default function pipeline(server: Server): void {
     /**
      * Log every request using the Logger Service Provider
@@ -39,6 +47,9 @@ export default function pipeline(server: Server): void {
      * Put this middleware before the ErrorMiddleware to log every request, even 500
      */
     server.pipe(RequestLoggerMiddleware);
+
+    // Add CORS headers to every response
+    server.pipe(CORSMiddleware);
 
     /**
      * Handle any uncaught Error during the request processing
@@ -60,8 +71,8 @@ export default function pipeline(server: Server): void {
     server.pipe(HTTPErrorMiddleware);
 
     // Add your own pre-processing middlewares here
-    server.pipe(ResponseCompressionMiddleware);
-    server.pipe(CORSMiddleware);
+    //
+    // server.pipe(ResponseCompressionMiddleware);
 
     /**
      * Register the router middleware, which will handle all incoming requests

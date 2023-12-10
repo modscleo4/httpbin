@@ -22,10 +22,13 @@ import * as BinHandler from "@app/handler/BinHandler.js";
 import * as AuthHandler from "@app/handler/AuthHandler.js";
 import InfoHandler from "@app/handler/InfoHandler.js";
 
+import { addSwaggerRoutes } from "midori-swaggerui";
+
 import AuthBearerMiddleware from "@app/middleware/AuthBearerMiddleware.js";
 import OauthScopeMiddlewareFactory from "@app/middleware/OauthScopeMiddleware.js";
 
-const OauthScopeMiddlewareBin = OauthScopeMiddlewareFactory({ scopes: ['bin'] });
+const OauthScopeWriteBinMiddleware = OauthScopeMiddlewareFactory({ scopes: ['write:bins'] });
+const OauthScopeDeleteBinMiddleware = OauthScopeMiddlewareFactory({ scopes: ['delete:bins'] });
 
 const Router = new RouterBuilder();
 
@@ -33,14 +36,20 @@ const Router = new RouterBuilder();
  * Routing
  *
  * Define your routes here
- * Use the Router.get(), Router.post(), Router.put(), Router.patch(), Router.delete() methods to define your routes
- * Use the Router.group() method to group routes under a common prefix
- * Use the Router.route() method to define a route using a custom HTTP method
+ * Use the Router.get(), Router.post(), Router.put(), Router.patch(), Router.delete() methods to define your routes..
+ * Use the Router.group() method to group routes under a common prefix.
+ * Use the Router.route() method to define a route using a custom HTTP method.
+ *
+ * Beware of trailing slashes! The Dispatcher Middleware will NOT remove nor add trailing slashes to the request path
+ * `GET /foo` and `GET /foo/` are different routes and will be dispatched to different handlers.
+ *
+ * You can add an parameter to the path by using the {parameterName} syntax. The parameter will be available in the params property of the Request.
+ *
+ * Example:
+ * Router.get('/user/{id}', UserHandler.Show).withName('user.show');
  */
 
-Router.get('/docs', async (req, app) => Response.file('src/swagger-ui/index.html'));
-Router.get('/openapi.yml', async (req, app) => Response.file('./openapi.yml'));
-
+addSwaggerRoutes(Router);
 Router.get('/', InfoHandler);
 
 Router.post('/auth/register', AuthHandler.Register).withName('auth.register');
@@ -49,14 +58,14 @@ Router.get('/auth/user', AuthHandler.User, [AuthBearerMiddleware]).withName('aut
 Router.post('/oauth/token', Oauth2Handler).withName('oauth.token');
 
 Router.group('/bin', () => {
-    Router.get('/', BinHandler.List).withName('bin.list');
-    Router.post('/', BinHandler.Create, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.create');
+    Router.get('', BinHandler.List).withName('bin.list');
+    Router.post('', BinHandler.Create, [AuthBearerMiddleware, OauthScopeWriteBinMiddleware]).withName('bin.create');
 
     Router.group('/{id}', () => {
-        Router.get('/', BinHandler.Show).withName('bin.show');
-        Router.put('/', BinHandler.Update, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.update');
-        Router.patch('/', BinHandler.Patch, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.patch');
-        Router.delete('/', BinHandler.Destroy, [AuthBearerMiddleware, OauthScopeMiddlewareBin]).withName('bin.destroy');
+        Router.get('', BinHandler.Show).withName('bin.show');
+        Router.put('', BinHandler.Update, [AuthBearerMiddleware, OauthScopeWriteBinMiddleware]).withName('bin.update');
+        Router.patch('', BinHandler.Patch, [AuthBearerMiddleware, OauthScopeWriteBinMiddleware]).withName('bin.patch');
+        Router.delete('', BinHandler.Destroy, [AuthBearerMiddleware, OauthScopeDeleteBinMiddleware]).withName('bin.destroy');
     });
 });
 

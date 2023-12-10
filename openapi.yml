@@ -1,0 +1,446 @@
+openapi: 3.0.0
+info:
+  description: "Sample project using Midori.js framework."
+  version: 1.0.0
+  title: Midori HTTP Bin
+  contact:
+    email: modscleo4@modscleo4.dev.br
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:3000
+    description: Development server
+  - url: https://httpbin-js.herokuapp.com
+    description: Production server
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUser'
+      responses:
+        '201':
+          description: User created
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ValidationErrorsResponse'
+        '409':
+          description: Username or email already in use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorsResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /auth/user:
+    get:
+      tags:
+        - Auth
+      summary: Get current user
+      security:
+        - oauth2: []
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUser'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /bin:
+    get:
+      tags:
+        - Bin
+      summary: Get all bins
+      responses:
+        '200':
+          description: Bins found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bin'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    post:
+      tags:
+        - Bin
+      summary: Create a new bin
+      security:
+        - oauth2: ['write:bins']
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBin'
+      responses:
+        '201':
+          description: Bin created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bin'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ValidationErrorsResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /bin/{id}:
+    get:
+      tags:
+        - Bin
+      summary: Get a bin by ID
+      parameters:
+        - name: id
+          in: path
+          description: Bin's ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bin found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bin'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ValidationErrorsResponse'
+        '404':
+          description: Bin not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    put:
+      tags:
+        - Bin
+      summary: Update a bin by ID
+      security:
+        - oauth2: ['write:bins']
+      parameters:
+        - name: id
+          in: path
+          description: Bin's ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBin'
+      responses:
+        '200':
+          description: Bin updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bin'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ValidationErrorsResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Bin not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Bin
+      summary: Partially update a bin by ID
+      security:
+        - oauth2: ['write:bins']
+      parameters:
+        - name: id
+          in: path
+          description: Bin's ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBin'
+      responses:
+        '200':
+          description: Bin updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bin'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ValidationErrorsResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Bin not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    delete:
+      tags:
+        - Bin
+      summary: Delete a bin by ID
+      security:
+        - oauth2: ['delete:bins']
+      parameters:
+        - name: id
+          in: path
+          description: Bin's ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Bin deleted
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ValidationErrorsResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Bin not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth2 password flow
+      flows:
+        password:
+          tokenUrl: /oauth/token
+          scopes:
+            write:bins: Write bins
+            delete:bins: Delete bins
+  schemas:
+    ServerErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Internal server error
+        stack:
+          type: array
+          description: Error stack
+          items:
+            type: object
+            properties:
+              method:
+                type: string
+                description: Method name
+                example: AppController.index
+              file:
+                type: string
+                description: File name
+                example: AppController.ts
+              line:
+                type: integer
+                description: Line number
+                example: 10
+              column:
+                type: integer
+                description: Column number
+                example: 10
+    ValidationErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Validation failed
+        error:
+          type: string
+          description: Single validation error (if it's not related to a field)
+          example: Invalid body
+    ValidationErrorsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Validation failed
+        errors:
+          type: object
+          description: Validation errors
+          example: { "username": ["This field is required"], "password": ["This field is required"] }
+          patternProperties:
+            ^[a-zA-Z0-9_]+$:
+              type: array
+              items:
+                type: string
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Invalid request
+    RequestUser:
+      type: object
+      properties:
+        username:
+          type: string
+          description: User's username
+          example: myusername
+        password:
+          type: string
+          description: User's password
+          example: 12345678
+    AuthUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User's UUID
+          example: 123e4567-e89b-12d3-a456-426614174000
+        username:
+          type: string
+          description: User's username
+          example: myusername
+    Bin:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Bin's UUID
+          example: 123e4567-e89b-12d3-a456-426614174000
+        userId:
+          type: string
+          format: uuid
+          description: User's UUID
+          example: 123e4567-e89b-12d3-a456-426614174000
+        content:
+          description: Bin's content
+        createdAt:
+          type: string
+          format: date-time
+          description: Bin's creation date
+          example: 2020-01-01T00:00:00.000Z
+        updatedAt:
+          type: string
+          format: date-time
+          description: Bin's last update date
+          example: 2020-01-01T00:00:00.000Z
+          nullable: true
+    RequestBin:
+      description: Bin's content

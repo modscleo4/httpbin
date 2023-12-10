@@ -17,17 +17,25 @@
 import { Server } from "midori/app";
 import { CORSConfigProviderFactory, ErrorConfigProviderFactory, JWTConfigProviderFactory, RequestConfigProviderFactory, ResponseConfigProviderFactory } from "midori/providers";
 
+/**
+ * Configuration Providers
+ *
+ * Define your configuration providers here.
+ * Use the server.configure() method to add configuration providers to the application.
+ * Use the app.config.get() method to recover the configuration in your handlers and/or middleware constructors.
+ */
+
 export default function config(server: Server): void {
     // Add configs here using `server.configure(ConfigProviderFactory(config))`
     // Recover the config with app.config.get(ConfigProvider) in your handlers and middleware constructors
 
     server.configure(CORSConfigProviderFactory({
-        origin: '*',
+        origin: process.env.CORS_ORIGIN || '*',
         methods: '*',
         headers: '*',
         maxAge: 86400,
         openerPolicy: 'same-origin',
-        embedderPolicy: 'require-corp'
+        embedderPolicy: 'unsafe-none'
     }));
 
     server.configure(ErrorConfigProviderFactory({
